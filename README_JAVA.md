@@ -2,60 +2,11 @@
     一个优雅的代码动画库。支持直接函数调用和链式调用。内部封装Tween来作为动画内核。
 ```
 
-#### Demo展示
 
-##### [Demo apk下载](https://github.com/wufuqi123/WuKongAnimation/raw/main/apk/app-release.apk)
-1. github Demo apk 二维码
-
-    ![下载二维码](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/img/github_apk.png)
-
-1. 国内 Demo apk 二维码
-
-    ![下载二维码](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/img/QRCode_258.png)
-
-
-#### 当前介绍kotlin使用方式
+#### 当前介绍java使用方式
 ##### [kotlin使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README.md)
 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)
 
-
-#### 基础功能
-1. 添加依赖
-    ``` 
-        implementation 'io.github.wufuqi123:WuKongAnimation:1.0.0'
-    ```
-
-2. 初始化SDK
-    ``` java
-        ActionManager.init(mApplication) // 尽可能早，推荐在Application中初始化
-    ```
-
-3. runAction方式使用动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)
-    ``` java
-        //当前为kotlin代码
-        view.runAction(Action.fadeIn(time))//执行渐入动画
-    ```
-
-4. 链式动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)
-     ``` java
-        //当前为kotlin代码
-        //执行渐入动画
-        view.createAction()
-            .fadeIn(time)
-            .start()
-    ```
-
-5. Tween 动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)
-    ``` java
-        //当前为kotlin代码
-        //执行渐入动画
-        //当前动画不会重复使用建议调用 setExpire(true)
-        TweenManager.builder(runView)
-            .to(mutableMapOf("alpha" to 1))
-            .time(time)
-            .setExpire(true)
-            .start()
-    ```
 
 #### 动画使用
     接下来介绍 <链式动画> 和 <action动画> 的使用方式。
@@ -65,51 +16,51 @@
 
 #### ![fade](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/fade.gif)
 
-1. 链式使用方式 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)
+1. 链式使用方式 
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //执行渐入动画
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .fadeIn(time)
             .start()
 
         
         //执行渐入动画
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .fadeOut(time)
             .start()
 
         //指定透明度
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .fadeTo(time,0f) //透明度传入 0-1
             .start()
     ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //执行渐入动画
-        view.runAction(Action.fadeIn(time))
+        RunAction.INSTANCE.runAction(view, Action.fadeIn(time))
 
         //执行渐出动画
-        view.runAction(Action.fadeOut(time))
+        RunAction.INSTANCE.runAction(view, Action.fadeOut(time))
 
         //指定透明度
-        view.runAction(Action.fadeTo(time,0f))//透明度传入 0-1
+        RunAction.INSTANCE.runAction(view, Action.fadeTo(time,0f))//透明度传入 0-1
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -120,15 +71,15 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //位移到指定位置
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .moveTo(time,x,y)
             .start()
 
         
         //根据当前位置，位移偏移
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .moveBy(time,x,y)
             .start()
 
@@ -136,26 +87,26 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
     
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //位移到指定位置
-        view.runAction(Action.moveTo(time,x,y))
+        RunAction.INSTANCE.runAction(view, Action.moveTo(time,x,y))
 
         //根据当前位置，位移偏移
-        view.runAction(Action.moveBy(time,x,y))
+        RunAction.INSTANCE.runAction(view, Action.moveBy(time,x,y))
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -166,15 +117,15 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //缩放到指定大小
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .scaleTo(time,x,y)
             .start()
 
         
         //根据当前大小，大小偏移
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .scaleBy(time,x,y)
             .start()
 
@@ -182,26 +133,26 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //缩放到指定大小
-        view.runAction(Action.scaleTo(time,x,y))
+        RunAction.INSTANCE.runAction(view, Action.scaleTo(time,x,y))
 
         //根据当前大小，大小偏移
-        view.runAction(Action.scaleBy(time,x,y))
+        RunAction.INSTANCE.runAction(view, Action.scaleBy(time,x,y))
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -213,15 +164,15 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //旋转到指定角度
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .rotateTo(time,rotation)
             .start()
 
         
         //根据当前角度，角度偏移
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .rotateBy(time,rotation)
             .start()
 
@@ -229,26 +180,26 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //旋转到指定角度
-        view.runAction(Action.rotateTo(time,rotation))
+        RunAction.INSTANCE.runAction(view, Action.rotateTo(time,rotation))
 
         //根据当前角度，角度偏移
-        view.runAction(Action.rotateBy(time,rotation))
+        RunAction.INSTANCE.runAction(view, Action.rotateBy(time,rotation))
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -260,15 +211,15 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //旋转到指定角度
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .rotateXTo(time,rotateX)
             .start()
 
         
         //根据当前角度，角度偏移
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .rotateXBy(time,rotateX)
             .start()
 
@@ -276,26 +227,26 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //旋转到指定角度
-        view.runAction(Action.rotateXTo(time,rotateX))
+        RunAction.INSTANCE.runAction(view, Action.rotateXTo(time,rotateX))
 
         //根据当前角度，角度偏移
-        view.runAction(Action.rotateXBy(time,rotateX))
+        RunAction.INSTANCE.runAction(view, Action.rotateXBy(time,rotateX))
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -307,15 +258,15 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //旋转到指定角度
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .rotateYTo(time,rotateY)
             .start()
 
         
         //根据当前角度，角度偏移
-        view.createAction()
+        new SequenceActionRunBuild(view)
             .rotateYBy(time,rotateY)
             .start()
 
@@ -323,26 +274,26 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //旋转到指定角度
-        view.runAction(Action.rotateYTo(time,rotateY))
+        RunAction.INSTANCE.runAction(view, Action.rotateYTo(time,rotateY))
 
         //根据当前角度，角度偏移
-        view.runAction(Action.rotateYBy(time,rotateY))
+        RunAction.INSTANCE.runAction(view, Action.rotateYBy(time,rotateY))
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -354,9 +305,9 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //透明度渐入后渐出
-        view.createSequenceAction()
+        new SequenceActionRunBuild(view)
             .fadeIn(time)
             .fadeOut(time)
             .start()
@@ -365,22 +316,22 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //透明度渐入后渐出
-        runView.runAction(Action.sequence(Action.fadeIn(time), Action.fadeOut(time)))
+        RunAction.INSTANCE.runAction(view, Action.sequence(Action.fadeIn(time), Action.fadeOut(time)))
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -392,9 +343,9 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //同时执行位移和旋转动画
-        view.createSpawnAction()
+        new SpawnActionRunBuild(view)
             .moveBy(time, x, y)
             .rotateBy(time, rotation)
             .start()
@@ -403,15 +354,15 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //同时执行位移和旋转动画
-        runView.runAction(
+        RunAction.INSTANCE.runAction(view, 
             Action.spawn(
                 Action.moveBy(time, x, y),
                 Action.rotateBy(time, rotation)
@@ -422,8 +373,8 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -432,38 +383,40 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //渐入后  执行打印
-        view.createSequenceAction()
+        new SequenceActionRunBuild(view)
             .fadeIn(time)
-            .callFunc {
-                Log.i(this::class.java.name, "fadeIn 执行完成")
-            }
+            .callFunc(() -> {
+                Log.i(CallbackActivity.this.getClass().getName(),"fadeIn 执行完成");
+                return null;
+            })
             .start()
 
     ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //渐入后  执行打印
-        runView.runAction(Action.sequence(Action.fadeIn(time), Action.callFunc {
-            Log.i(this::class.java.name, "fadeIn 执行完成")
-        }))
+        RunAction.INSTANCE.runAction(runView, Action.INSTANCE.sequence(Action.INSTANCE.fadeIn(time), Action.INSTANCE.callFunc(() -> {
+            Log.i(CallbackActivity.this.getClass().getName(),"fadeIn 执行完成");
+            return null;
+        })));
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
@@ -472,9 +425,9 @@
 1. 链式使用方式
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //等待1秒后执行渐入
-        view.createSequenceAction()
+        new SequenceActionRunBuild(view)
             .wait(1000)
             .fadeIn(time)
             .start()
@@ -483,21 +436,21 @@
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```
 
 
 2. runAction使用方式
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         //等待1秒后执行渐入
-        runView.runAction(Action.sequence(Action.wait(1000),Action.fadeIn(time)))
+        RunAction.INSTANCE.runAction(view, Action.sequence(Action.wait(1000),Action.fadeIn(time)))
 
      ```
 
     停止动画
     ``` java
-        //当前为kotlin代码
-        view.stopAction()
+        //当前为java代码
+        RunAction.INSTANCE.stopAction(view)
     ```

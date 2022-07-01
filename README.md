@@ -59,4 +59,9 @@
 
 #### 动画使用
     接下来介绍 <链式动画> 和 <action动画> 的使用方式。
-##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)不在当前文档讲述。
+##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_TWEEN.md)不在当前文档讲述。
+
+1. 透明度渐变动画
+
+    ![fade](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/fade.gif)
+

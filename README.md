@@ -4,7 +4,7 @@
 
 #### Demo展示
 
-##### [Demo apk下载](https://github.com/wufuqi123/WuKongAnimation/raw/main/apk/app-release.apk)
+##### [github Demo apk下载](https://github.com/wufuqi123/WuKongAnimation/raw/main/apk/app-release.apk)   [码云 Demo apk下载](https://gitee.com/wu_fuqi/WuKongAnimation/raw/master/apk/app-release.apk)
 1. github Demo apk 二维码
 
     ![下载二维码](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/img/github_apk.png)

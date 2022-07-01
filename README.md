@@ -63,7 +63,7 @@
 
 #### 透明度渐变动画
 
-    ![fade](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/fade.gif)
+#### ![fade](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/fade.gif)
 
 1. 链式使用方式
 

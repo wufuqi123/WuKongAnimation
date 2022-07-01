@@ -16,18 +16,21 @@ class Tween {
     private val mTargetFieldMap = mutableMapOf<String, Field>()
     private val mTargetMethodMap = mutableMapOf<String, Method>()
 
+    @JvmField
     var manager: TweenManager? = null
 
     //执行的总时间
     private var countTime: Long = 0
 
     //是否已激活状态
+    @JvmField
     var active: Boolean = false
 
     //使用的算法
     private var easingProperty: (t: Double) -> Double = Easing.linear()
 
     //执行完一次后  是否从内存内清理出来
+    @JvmField
     var expire: Boolean = false
 
     //重复执行的次数，负数为无线循环
@@ -46,6 +49,7 @@ class Tween {
     private var isStarted: Boolean = false;
 
     //是否已结束
+    @JvmField
     var isEnded: Boolean = false;
 
     //是否调用了 start方法，用来判断restart回调
@@ -149,6 +153,9 @@ class Tween {
      * 开始动画
      */
     fun start(): Tween {
+        if(this.active){
+            return this
+        }
         this.active = true
         this.isUseStartFun = true
         if (this.delayProperty <= 0 && this.countTime <= 0) {
@@ -162,6 +169,9 @@ class Tween {
      * 结束动画
      */
     fun stop(): Tween {
+        if(!this.active){
+            return this
+        }
         this.active = false
         this.eventEmitter.emit(TweenManager.EVENT_STOP)
         return this
@@ -190,6 +200,7 @@ class Tween {
      */
     fun remove(): Tween {
         if (this.manager == null) return this
+        stop()
         this.manager?.removeTween(this)
         clearReflect()
         offAll()
@@ -452,6 +463,14 @@ class Tween {
 
                 this.isEnded = true
                 this.active = false
+                this.currElapsedTime = 0
+                this.currPingPong = false
+                if(this.pingPongProperty){
+                    toData = this.toData
+                    fromData = this.fromData
+                    this.fromData = toData
+                    this.toData = fromData
+                }
                 this.eventEmitter.emit(TweenManager.EVENT_END)
 
                 if (this.chainTween != null && this.manager != null) {
@@ -566,7 +585,7 @@ class Tween {
             return field
         } catch (e: Exception) {
             if (targetClass.superclass != null) {
-                return getTargetField(targetClass.superclass, name)
+                return getTargetField(targetClass.superclass!!, name)
             }
         }
         return null
@@ -584,7 +603,7 @@ class Tween {
             }
         }
         if (targetClass.superclass != null) {
-            return getTargetMethod(targetClass.superclass, name)
+            return getTargetMethod(targetClass.superclass!!, name)
         }
         return null
     }

@@ -28,6 +28,18 @@ object Action {
     }
 
     /**
+     * 透明度渐变到指定值
+     * @param time 时间毫秒数
+     * @param alpha 透明度 0 - 1
+     */
+    fun fadeTo(
+        time: Long,
+        alpha: Float
+    ): () -> ActionData {
+        return fadeTo(time, alpha, null)
+    }
+
+    /**
      *  透明度渐入
      * @param time 时间毫秒数
      * @param easing 缓动函数  Easing.linear()
@@ -46,6 +58,14 @@ object Action {
     /**
      *  透明度渐入
      * @param time 时间毫秒数
+     */
+    fun fadeIn(time: Long): () -> ActionData {
+        return fadeIn(time, null)
+    }
+
+    /**
+     *  透明度渐入
+     * @param time 时间毫秒数
      * @param easing 缓动函数  Easing.linear()
      */
     fun fadeOut(time: Long, easing: ((t: Double) -> Double)? = null): () -> ActionData {
@@ -57,6 +77,14 @@ object Action {
             animationData.easingProperty = easing
             animationData
         }
+    }
+
+    /**
+     *  透明度渐入
+     * @param time 时间毫秒数
+     */
+    fun fadeOut(time: Long): () -> ActionData {
+        return fadeOut(time, null)
     }
 
 
@@ -84,6 +112,20 @@ object Action {
         }
     }
 
+    /**
+     *  移动到目标位置
+     * @param time 时间毫秒数
+     * @param x x位置
+     * @param y y位置
+     */
+    fun moveTo(
+        time: Long,
+        x: Float = Float.NaN,
+        y: Float = Float.NaN
+    ): () -> ActionData {
+        return moveTo(time, x, y, null)
+    }
+
 
     /**
      *  继续移动多少位置
@@ -107,6 +149,20 @@ object Action {
             animationData.easingProperty = easing
             animationData
         }
+    }
+
+    /**
+     *  继续移动多少位置
+     * @param time 时间毫秒数
+     * @param x x位置
+     * @param y y位置
+     */
+    fun moveBy(
+        time: Long,
+        x: Float = Float.NaN,
+        y: Float = Float.NaN
+    ): () -> ActionData {
+        return moveBy(time, x, y, null)
     }
 
 
@@ -134,6 +190,20 @@ object Action {
         }
     }
 
+    /**
+     *  缩放到指定大小
+     * @param time 时间毫秒数
+     * @param x x缩放
+     * @param y y缩放
+     */
+    fun scaleTo(
+        time: Long,
+        x: Float = Float.NaN,
+        y: Float = Float.NaN
+    ): () -> ActionData {
+        return scaleTo(time, x, y, null)
+    }
+
 
     /**
      *  继续缩放多少大小
@@ -157,6 +227,20 @@ object Action {
             animationData.easingProperty = easing
             animationData
         }
+    }
+
+    /**
+     *  继续缩放多少大小
+     * @param time 时间毫秒数
+     * @param x x缩放
+     * @param y y缩放
+     */
+    fun scaleBy(
+        time: Long,
+        x: Float = Float.NaN,
+        y: Float = Float.NaN
+    ): () -> ActionData {
+        return scaleBy(time, x, y, null)
     }
 
 
@@ -183,6 +267,19 @@ object Action {
 
 
     /**
+     *  旋转到目标角度
+     * @param time 时间毫秒数
+     * @param rotation 角度 0 - 360
+     */
+    fun rotateTo(
+        time: Long,
+        rotation: Float
+    ): () -> ActionData {
+        return rotateTo(time, rotation, null)
+    }
+
+
+    /**
      *  继续旋转多少角度
      * @param time 时间毫秒数
      * @param rotation 角度 0 - 360
@@ -201,6 +298,18 @@ object Action {
             animationData.easingProperty = easing
             animationData
         }
+    }
+
+    /**
+     *  继续旋转多少角度
+     * @param time 时间毫秒数
+     * @param rotation 角度 0 - 360
+     */
+    fun rotateBy(
+        time: Long,
+        rotation: Float
+    ): () -> ActionData {
+        return rotateBy(time, rotation, null)
     }
 
 
@@ -225,6 +334,18 @@ object Action {
         }
     }
 
+    /**
+     *  旋转到目标角度
+     * @param time 时间毫秒数
+     * @param rotation 角度 0 - 360
+     */
+    fun rotateXTo(
+        time: Long,
+        rotation: Float
+    ): () -> ActionData {
+        return rotateXTo(time, rotation, null)
+    }
+
 
     /**
      *  继续旋转多少角度
@@ -245,6 +366,18 @@ object Action {
             animationData.easingProperty = easing
             animationData
         }
+    }
+
+    /**
+     *  继续旋转多少角度
+     * @param time 时间毫秒数
+     * @param rotation 角度 0 - 360
+     */
+    fun rotateXBy(
+        time: Long,
+        rotation: Float
+    ): () -> ActionData {
+        return rotateXBy(time, rotation, null)
     }
 
 
@@ -269,6 +402,18 @@ object Action {
         }
     }
 
+    /**
+     *  旋转到目标角度
+     * @param time 时间毫秒数
+     * @param rotation 角度 0 - 360
+     */
+    fun rotateYTo(
+        time: Long,
+        rotation: Float
+    ): () -> ActionData {
+        return rotateYTo(time, rotation, null)
+    }
+
 
     /**
      *  继续旋转多少角度
@@ -289,6 +434,19 @@ object Action {
             animationData.easingProperty = easing
             animationData
         }
+    }
+
+
+    /**
+     *  继续旋转多少角度
+     * @param time 时间毫秒数
+     * @param rotation 角度 0 - 360
+     */
+    fun rotateYBy(
+        time: Long,
+        rotation: Float
+    ): () -> ActionData {
+        return rotateYBy(time, rotation, null)
     }
 
 

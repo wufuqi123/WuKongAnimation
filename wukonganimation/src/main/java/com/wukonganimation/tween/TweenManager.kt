@@ -1,5 +1,6 @@
 package com.wukonganimation.tween
 
+import android.util.Log
 import java.util.*
 
 class TweenManager {
@@ -35,8 +36,19 @@ class TweenManager {
             TweenManager()
         }
 
+        /**
+         * 创建一个可以重复使用的tween
+         * 最后调用  .remove() 销毁tween
+         */
         fun builder(target: Any): Tween {
             return instance.createTween(target)
+        }
+
+        /**
+         * 创建使用一次的tween
+         */
+        fun builderOne(target: Any): Tween {
+            return instance.createTween(target).setExpire(true)
         }
 
     }
@@ -50,6 +62,7 @@ class TweenManager {
     }
 
     fun upDate(dt: Long) {
+//        Log.e("wufuqi123", "  update $dt")
         tweens.forEach {
             if (it.active) {
                 it.update(dt)

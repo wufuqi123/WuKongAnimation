@@ -1,27 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.wukonganimation">
+    package="com.example.hehe">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WuKongAnimation"
-        tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+        android:theme="@style/Theme.HeHe">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".uikt.FadeToActivityKt" />
+        <activity android:name=".uikt.FadeInActivityKt" />
+        <activity android:name=".uikt.FadeOutActivityKt" />
+        <activity android:name=".uikt.MoveToActivityKt" />
+        <activity android:name=".uikt.MoveByActivityKt" />
+        <activity android:name=".uikt.ScaleToActivityKt" />
+        <activity android:name=".uikt.ScaleByActivityKt" />
+        <activity android:name=".uikt.RotateToActivityKt" />
+        <activity android:name=".uikt.RotateByActivityKt" />
+        <activity android:name=".uikt.RotateXByActivityKt" />
+        <activity android:name=".uikt.RotateXToActivityKt" />
+        <activity android:name=".uikt.RotateYByActivityKt" />
+        <activity android:name=".uikt.RotateYToActivityKt" />
+        <activity android:name=".uikt.SequenceActivityKt" />
+        <activity android:name=".uikt.CallbackActivityKt" />
+        <activity android:name=".uikt.WaitActivityKt" />
+        <activity android:name=".uikt.SpawnActivityKt" />
+        <activity android:name=".uikt.TweenLoopActivityKt" />
+        <activity android:name=".uikt.TweenPingPongActivityKt" />
+        <activity android:name=".uikt.TweenEventActivityKt" />
+        <activity android:name=".uikt.TweenSlowFunctionActivityKt" />
+
+        <activity android:name=".ui.FadeToActivity" />
+        <activity android:name=".ui.FadeInActivity" />
+        <activity android:name=".ui.FadeOutActivity" />
+        <activity android:name=".ui.MoveToActivity" />
+        <activity android:name=".ui.MoveByActivity" />
+        <activity android:name=".ui.ScaleToActivity" />
+        <activity android:name=".ui.ScaleByActivity" />
+        <activity android:name=".ui.RotateToActivity" />
+        <activity android:name=".ui.RotateByActivity" />
+        <activity android:name=".ui.RotateXByActivity" />
+        <activity android:name=".ui.RotateXToActivity" />
+        <activity android:name=".ui.RotateYByActivity" />
+        <activity android:name=".ui.RotateYToActivity" />
+        <activity android:name=".ui.SequenceActivity" />
+        <activity android:name=".ui.CallbackActivity" />
+        <activity android:name=".ui.WaitActivity" />
+        <activity android:name=".ui.SpawnActivity" />
+
     </application>
 
 </manifest>

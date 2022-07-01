@@ -15,8 +15,8 @@
 
 
 #### 当前介绍kotlin使用方式
-##### [kotlin使用方式](https://github.com/wufuqi123/WuKongAnimation/README.md)
-[java使用方式](https://github.com/wufuqi123/WuKongAnimation/README_JAVA.md)
+##### [kotlin使用方式](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
+[java使用方式](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
 
 
 #### 基础功能
@@ -30,13 +30,13 @@
         ActionManager.init(mApplication) // 尽可能早，推荐在Application中初始化
     ```
 
-3. runAction方式使用动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/README_JAVA.md)
+3. runAction方式使用动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
     ``` java
         //当前为kotlin代码
         view.runAction(Action.fadeIn(time))//执行渐入动画
     ```
 
-4. 链式动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/README_JAVA.md)
+4. 链式动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
      ``` java
         //当前为kotlin代码
         //执行渐入动画
@@ -45,7 +45,7 @@
             .start()
     ```
 
-5. Tween 动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/README_JAVA.md)
+5. Tween 动画 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
     ``` java
         //当前为kotlin代码
         //执行渐入动画
@@ -65,7 +65,7 @@
 
 #### ![fade](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/fade.gif)
 
-1. 链式使用方式 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/README_JAVA.md)
+1. 链式使用方式 [java使用方式](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
 
      ``` java
         //当前为kotlin代码

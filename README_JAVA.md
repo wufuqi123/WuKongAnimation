@@ -468,7 +468,7 @@
 1. 链式使用方式  [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
-        //当前为kotlin代码
+        //当前为java代码
         new SequenceActionRunBuild(view)
             .fadeIn(time,Easing.linear()) //使用线性缓动函数
             .start()
@@ -479,7 +479,7 @@
 
 2. runAction使用方式  [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
-        //当前为kotlin代码
+        //当前为java代码
         RunAction.INSTANCE.runAction(view, Action.fadeIn(time,Easing.linear())) //使用线性缓动函数
 
      ```

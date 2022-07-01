@@ -175,6 +175,19 @@
 
 #### Easing 缓动函数
 
-    缓动函数计算引用 [tween.js](http://tweenjs.github.io/tween.js/) 的缓动函数。
 
-    [缓动效果](http://tweenjs.github.io/tween.js/examples/03_graphs.html)
+
+
+缓动函数计算引用 [tween.js](http://tweenjs.github.io/tween.js/) 的缓动函数。
+
+[缓动效果](http://tweenjs.github.io/tween.js/examples/03_graphs.html)
+
+
+    ``` java
+        //使用方式
+        TweenManager.builderOne(obj)
+            .to(mutableMapOf("alpha" to 1))
+            .time(1000)
+            .easing(Easing.linear()) //使用线性的缓动函数，默认使用线性
+            .start()
+    ···

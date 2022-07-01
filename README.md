@@ -45,7 +45,7 @@
             .start()
     ```
 
-5. Tween 动画  [java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
+5. Tween 动画  [Tween动画请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md)
     ``` java
         //当前为kotlin代码
         //执行渐入动画
@@ -59,7 +59,7 @@
 
 #### 动画使用
     接下来介绍 <链式动画> 和 <action动画> 的使用方式。
-##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/README_TWEEN.md)不在当前文档讲述。
+##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md)不在当前文档讲述。
 
 #### 透明度渐变动画
 

@@ -4,19 +4,19 @@
 
 
 #### 当前介绍java使用方式
-##### [kotlin使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README.md)
-[java使用方式](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)
+##### [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
+[java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
 
 
 #### 动画使用
     接下来介绍 <链式动画> 和 <action动画> 的使用方式。
-##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_TWEEN.md)不在当前文档讲述。
+##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md)不在当前文档讲述。
 
 #### 透明度渐变动画
 
 #### ![fade](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/fade.gif)
 
-1. 链式使用方式 
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -44,7 +44,7 @@
     ```
 
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //执行渐入动画
@@ -68,7 +68,7 @@
 
 #### ![move](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/move.gif)
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -92,7 +92,7 @@
     ```
     
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //位移到指定位置
@@ -114,7 +114,7 @@
 
 #### ![move](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/scale.gif)
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -138,7 +138,7 @@
     ```
 
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //缩放到指定大小
@@ -161,7 +161,7 @@
 #### ![move](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/rotate.gif)
 
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -185,7 +185,7 @@
     ```
 
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //旋转到指定角度
@@ -208,7 +208,7 @@
 #### ![move](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/rotateX.gif)
 
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -232,7 +232,7 @@
     ```
 
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //旋转到指定角度
@@ -255,7 +255,7 @@
 #### ![move](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/rotateY.gif)
 
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -279,7 +279,7 @@
     ```
 
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //旋转到指定角度
@@ -302,7 +302,7 @@
 #### ![move](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/sequence.gif)
 
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -320,7 +320,7 @@
         RunAction.INSTANCE.stopAction(view)
     ```
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //透明度渐入后渐出
@@ -340,7 +340,7 @@
 #### ![move](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/spawn.gif)
 
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -358,7 +358,7 @@
         RunAction.INSTANCE.stopAction(view)
     ```
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //同时执行位移和旋转动画
@@ -380,7 +380,7 @@
 
 #### 使用回调
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -402,7 +402,7 @@
     ```
 
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //渐入后  执行打印
@@ -422,7 +422,7 @@
 
 #### wait调用
 
-1. 链式使用方式
+1. 链式使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 
      ``` java
         //当前为java代码
@@ -441,7 +441,7 @@
     ```
 
 
-2. runAction使用方式
+2. runAction使用方式   [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
     ``` java
         //当前为java代码
         //等待1秒后执行渐入

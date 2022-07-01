@@ -58,7 +58,5 @@
     ```
 
 #### 动画使用
-
     接下来介绍 <链式动画> 和 <action动画> 的使用方式。
-    
-    [Tween动画](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)不在当前文档讲述。
+##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_JAVA.md)不在当前文档讲述。

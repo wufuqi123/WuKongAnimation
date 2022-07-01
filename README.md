@@ -61,7 +61,53 @@
     接下来介绍 <链式动画> 和 <action动画> 的使用方式。
 ##### [Tween动画](https://github.com/wufuqi123/WuKongAnimation/raw/main/README_TWEEN.md)不在当前文档讲述。
 
-1. 透明度渐变动画
+#### 透明度渐变动画
 
     ![fade](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/gif/fade.gif)
 
+1. 链式使用方式
+
+     ``` java
+        //当前为kotlin代码
+        //执行渐入动画
+        view.createAction()
+            .fadeIn(time)
+            .start()
+
+        
+        //执行渐入动画
+        view.createAction()
+            .fadeOut(time)
+            .start()
+
+        //指定透明度
+        view.createAction()
+            .fadeTo(time,0f) //透明度传入 0-1
+            .start()
+    ```
+
+    停止动画
+    ``` java
+        //当前为kotlin代码
+        view.stopAction()
+    ```
+
+
+2. runAction使用方式
+    ``` java
+        //当前为kotlin代码
+        //执行渐入动画
+        view.runAction(Action.fadeIn(time))
+
+        //执行渐出动画
+        view.runAction(Action.fadeOut(time))
+
+        //指定透明度
+        view.runAction(Action.fadeTo(time,0f))//透明度传入 0-1
+     ```
+
+    停止动画
+    ``` java
+        //当前为kotlin代码
+        view.stopAction()
+    ```

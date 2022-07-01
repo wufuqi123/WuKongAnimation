@@ -11,7 +11,7 @@
 
 1. 国内 Demo apk 二维码
 
-    ![下载二维码](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/img/github_apk.png)
+    ![下载二维码](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/img/QRCode_258.png)
 
 
 #### 当前介绍kotlin使用方式

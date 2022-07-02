@@ -3,6 +3,11 @@
 ```
 
 
+#### 图片和动画看不到
+##### [码云链接请进入](https://gitee.com/wu_fuqi/WuKongAnimation/blob/master/README_TWEEN.md)
+
+
+
 #### 动画使用
     接下来介绍 <Tween动画> 的使用方式。
 ##### [链式动画 和 action动画](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)不在当前文档讲述。

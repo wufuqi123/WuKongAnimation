@@ -2,6 +2,9 @@
     一个优雅的代码动画库。支持直接函数调用和链式调用。内部封装Tween来作为动画内核。
 ```
 
+#### 图片和动画看不到
+##### [码云链接请进入](https://gitee.com/wu_fuqi/WuKongAnimation/blob/master/README_JAVA.md)
+
 
 #### 当前介绍java使用方式
 ##### [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)

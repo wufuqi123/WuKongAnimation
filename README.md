@@ -14,6 +14,12 @@
     ![下载二维码](https://github.com/wufuqi123/WuKongAnimation/raw/main/assets/img/QRCode_258.png)
 
 
+
+#### 图片和动画看不到
+##### [码云链接请进入](https://gitee.com/wu_fuqi/WuKongAnimation/blob/master/README.md)
+
+
+
 #### 当前介绍kotlin使用方式
 ##### [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 [java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)

@@ -27,22 +27,42 @@
 
 #### 基础功能
 1. 添加依赖
+
+    请在 build.gradle 下添加依赖。
+
     ``` 
         implementation 'io.github.wufuqi123:WuKongAnimation:1.0.0'
     ```
 
-2. 初始化SDK
+
+2. 设置jdk8或更高版本
+
+    因为本sdk使用了jdk8才能使用的 Lambda 表达式，所以要在 build.gradle 下面配置jdk8或以上版本。
+
+    ``` 
+    android {
+        ....
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+        
+    }
+    ```
+
+3. 初始化SDK
     ``` java
         ActionManager.init(mApplication) // 尽可能早，推荐在Application中初始化
     ```
 
-3. runAction方式使用动画  [java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
+4. runAction方式使用动画  [java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
     ``` java
         //当前为kotlin代码
         view.runAction(Action.fadeIn(time))//执行渐入动画
     ```
 
-4. 链式动画  [java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
+5. 链式动画  [java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
      ``` java
         //当前为kotlin代码
         //执行渐入动画
@@ -51,7 +71,7 @@
             .start()
     ```
 
-5. Tween 动画  [Tween动画请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md)
+6. Tween 动画  [Tween动画请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md)
     ``` java
         //当前为kotlin代码
         //执行渐入动画

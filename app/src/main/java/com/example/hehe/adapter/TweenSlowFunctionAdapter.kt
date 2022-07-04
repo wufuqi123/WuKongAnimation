@@ -15,6 +15,8 @@ open class TweenSlowFunctionAdapter : RecyclerView.Adapter<TweenSlowFunctionAdap
     private val mActivity: TweenSlowFunctionActivityKt
     private val mDatas: MutableList<TweenSlowFunctionData>
 
+    var clickCallback: ((d: TweenSlowFunctionData) -> Unit)? = null
+
 
     constructor(activity: TweenSlowFunctionActivityKt, datas: MutableList<TweenSlowFunctionData>) {
         mActivity = activity
@@ -31,6 +33,7 @@ open class TweenSlowFunctionAdapter : RecyclerView.Adapter<TweenSlowFunctionAdap
     override fun onBindViewHolder(holder: NormalHolder, position: Int) {
         holder.mBtn.text = mDatas[position].text
         holder.mBtn.setOnClickListener {
+            clickCallback?.invoke(mDatas[position])
             mActivity.mTween?.remove()
             mActivity.mRunView.x = mActivity.x
             mActivity.mRunView.y = mActivity.y
@@ -48,7 +51,8 @@ open class TweenSlowFunctionAdapter : RecyclerView.Adapter<TweenSlowFunctionAdap
 
     data class TweenSlowFunctionData(
         val text: String,
-        val easing: (t: Double) -> Double
+        val easing: (t: Double) -> Double,
+        val easingImg: Int
     )
 
     class NormalHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

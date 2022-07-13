@@ -564,12 +564,12 @@
 设置全部动画的速度为1倍
 
 
-    ``` java
+``` java
 
-        //设置全部动画的速度为1倍
-        TweenManager.speed = 1.0
+    //设置全部动画的速度为1倍
+    TweenManager.speed = 1.0
 
-    ```
+```
 
 
 #### 设置全局暂停动画
@@ -578,12 +578,12 @@
 设置动画全局暂停
 
 
-    ``` java
+``` java
 
-        //设置动画全局暂停
-        TweenManager.pause()
+    //设置动画全局暂停
+    TweenManager.pause()
 
-    ```
+```
 
 
 #### 设置全局恢复动画
@@ -592,11 +592,11 @@
 设置动画全局恢复
 
 
-    ``` java
+``` java
 
-        //设置动画全局恢复
-        TweenManager.pause()
+    //设置动画全局恢复
+    TweenManager.pause()
 
-    ```
+```
 
 

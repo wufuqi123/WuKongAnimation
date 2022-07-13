@@ -39,6 +39,7 @@
         <activity android:name=".uikt.TweenPingPongActivityKt" />
         <activity android:name=".uikt.TweenEventActivityKt" />
         <activity android:name=".uikt.TweenSlowFunctionActivityKt" />
+        <activity android:name=".uikt.TweenManagerActivityKt" />
 
         <activity android:name=".ui.FadeToActivity" />
         <activity android:name=".ui.FadeInActivity" />

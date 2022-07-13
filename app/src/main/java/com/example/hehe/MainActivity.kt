@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         add("tween-PingPong")
         add("tween-event")
         add("tween-Slow function")
+        add("TweenManager")
     }
 
     private val mActivityKTClassMap = mutableMapOf<String, Class<*>>().apply {
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         set(mButtonTexts[18], TweenPingPongActivityKt::class.java)
         set(mButtonTexts[19], TweenEventActivityKt::class.java)
         set(mButtonTexts[20], TweenSlowFunctionActivityKt::class.java)
+        set(mButtonTexts[21], TweenManagerActivityKt::class.java)
     }
 
     private val mActivityClassMap = mutableMapOf<String, Class<*>>().apply {
@@ -83,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         set(mButtonTexts[18], TweenPingPongActivityKt::class.java)
         set(mButtonTexts[19], TweenEventActivityKt::class.java)
         set(mButtonTexts[20], TweenSlowFunctionActivityKt::class.java)
+        set(mButtonTexts[21], TweenManagerActivityKt::class.java)
     }
 
     lateinit var mAdapter: MainRecyclerAdapter

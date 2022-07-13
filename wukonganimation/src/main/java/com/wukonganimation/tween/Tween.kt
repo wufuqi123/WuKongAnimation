@@ -1,20 +1,18 @@
 package com.wukonganimation.tween
 
 import com.wukonganimation.event.EventEmitter
-import java.lang.reflect.Field
-import java.lang.reflect.Method
+import com.wukonganimation.tween.targetvalue.TargetValueAbstract
+import com.wukonganimation.tween.targetvalue.TargetValueManager
 
 class Tween {
     //要修改的对象
-    lateinit var target: Any
-    private lateinit var targetClass: Class<*>
+    var target: Any
+    var mTargetValueInterface: TargetValueAbstract
 
     private val eventEmitter by lazy {
         EventEmitter()
     }
 
-    private val mTargetFieldMap = mutableMapOf<String, Field>()
-    private val mTargetMethodMap = mutableMapOf<String, Method>()
 
     @JvmField
     var manager: TweenManager? = null
@@ -62,10 +60,10 @@ class Tween {
     private var fromData: MutableMap<String, Number> = mutableMapOf()
 
     //当前等待时间
-    private var currDelayTime: Long = 0;
+    private var currDelayTime: Double = 0.0
 
     //当前运行的时间
-    private var currElapsedTime: Long = 0;
+    private var currElapsedTime: Double = 0.0
 
     //当前重复的次数
     private var currRepeat: Int = 0;
@@ -76,11 +74,11 @@ class Tween {
     //扩展的Tween，当前的Tween执行完成后会立刻执行此扩展的Tween
     private var chainTween: Tween? = null
 
-    private var _updateDeltaOffsetFun: ((t: Long) -> Long)? = null
+    private var _updateDeltaOffsetFun: ((t: Double) -> Double)? = null
 
     constructor(target: Any, manager: TweenManager? = null) {
         this.target = target
-        targetClass = target::class.java
+        mTargetValueInterface = TargetValueManager.createTargetValue(target)
         if (manager != null) this.addTo(manager)
         this.clear()
     }
@@ -153,7 +151,7 @@ class Tween {
      * 开始动画
      */
     fun start(): Tween {
-        if(this.active){
+        if (this.active) {
             return this
         }
         this.active = true
@@ -169,7 +167,7 @@ class Tween {
      * 结束动画
      */
     fun stop(): Tween {
-        if(!this.active){
+        if (!this.active) {
             return this
         }
         this.active = false
@@ -202,7 +200,7 @@ class Tween {
         if (this.manager == null) return this
         stop()
         this.manager?.removeTween(this)
-        clearReflect()
+        mTargetValueInterface.clear()
         offAll()
         return this
     }
@@ -224,7 +222,7 @@ class Tween {
      * @param listener 事件触发回调
      */
     fun on(eventName: String, listener: (param: MutableList<Any>) -> Unit): Tween {
-        this.eventEmitter.on(eventName,listener)
+        this.eventEmitter.on(eventName, listener)
         return this
     }
 
@@ -235,7 +233,7 @@ class Tween {
      * @param listener 事件触发回调
      */
     fun once(eventName: String, listener: (param: MutableList<Any>) -> Unit): Tween {
-        this.eventEmitter.once(eventName,listener)
+        this.eventEmitter.once(eventName, listener)
         return this
     }
 
@@ -245,7 +243,7 @@ class Tween {
      * @param listener 事件触发回调
      */
     fun off(eventName: String, listener: (param: MutableList<Any>) -> Unit): Tween {
-        this.eventEmitter.off(eventName,listener)
+        this.eventEmitter.off(eventName, listener)
         return this
     }
 
@@ -259,21 +257,12 @@ class Tween {
     }
 
 
-
     /**
      * 取消全部事件
      */
     fun offAll(): Tween {
         this.eventEmitter.offAll()
         return this
-    }
-
-    /**
-     * 清除反射数据
-     */
-    fun clearReflect() {
-        mTargetMethodMap.clear()
-        mTargetFieldMap.clear()
     }
 
 
@@ -293,8 +282,8 @@ class Tween {
         isEnded = false
         toData.clear()
         fromData.clear()
-        currDelayTime = 0
-        currElapsedTime = 0
+        currDelayTime = 0.0
+        currElapsedTime = 0.0
         currRepeat = 0
         currPingPong = false
         chainTween = null
@@ -305,9 +294,9 @@ class Tween {
      * 重置Tween，保留参数可以重新执行动画
      */
     fun reset(): Tween {
-        currElapsedTime = 0
+        currElapsedTime = 0.0
         currRepeat = 0
-        currDelayTime = 0
+        currDelayTime = 0.0
         isStarted = false
         isEnded = false
         if (pingPongProperty && currPingPong) {
@@ -371,7 +360,7 @@ class Tween {
         active = false
         //如果是  pingPong  则  不设置
         if (!pingPongProperty) {
-            currElapsedTime = 1
+            currElapsedTime = 1.0
             this.apply(1)
             if (chainTween != null && manager != null) {
                 chainTween!!.addTo(manager!!)
@@ -382,13 +371,13 @@ class Tween {
     }
 
 
-    fun setUpdateDeltaOffsetFun(updateDeltaOffsetFun: (t: Long) -> Long): Tween {
+    fun setUpdateDeltaOffsetFun(updateDeltaOffsetFun: (t: Double) -> Double): Tween {
         this._updateDeltaOffsetFun = updateDeltaOffsetFun
         return this
     }
 
 
-    fun update(_deltaMS: Long) {
+    fun update(_deltaMS: Double) {
         var deltaMS = _deltaMS
         //如果设置了定时器
         if (this.canDeltaUpdate()) {
@@ -403,7 +392,7 @@ class Tween {
         val toData: MutableMap<String, Number>
         val fromData: MutableMap<String, Number>
         if (this._updateDeltaOffsetFun != null) {
-            deltaMS += (this._updateDeltaOffsetFun?.let { it(deltaMS) } ?: 0L)
+            deltaMS += (this._updateDeltaOffsetFun?.let { it(deltaMS) } ?: 0.0)
         }
         if (this.delayProperty > this.currDelayTime) {
             this.currDelayTime += deltaMS
@@ -425,7 +414,7 @@ class Tween {
             val t = this.currElapsedTime + deltaMS
             val ended = t >= time
 
-            this.currElapsedTime = if (ended) time else t
+            this.currElapsedTime = if (ended) time.toDouble() else t
             this.apply(time)
 
             val realElapsed =
@@ -441,14 +430,14 @@ class Tween {
                     this.toData = fromData
 
                     this.eventEmitter.emit(TweenManager.EVENT_PINGPONG)
-                    this.currElapsedTime = 0
+                    this.currElapsedTime = 0.0
                     return
                 }
 
                 if (this.loop || this.countRepeat > this.currRepeat) {
                     this.currRepeat++
                     this.eventEmitter.emit(TweenManager.EVENT_ERPEAT, this.currRepeat)
-                    this.currElapsedTime = 0
+                    this.currElapsedTime = 0.0
 
                     if (this.pingPongProperty && this.currPingPong) {
                         toData = this.toData
@@ -463,9 +452,9 @@ class Tween {
 
                 this.isEnded = true
                 this.active = false
-                this.currElapsedTime = 0
+                this.currElapsedTime = 0.0
                 this.currPingPong = false
-                if(this.pingPongProperty){
+                if (this.pingPongProperty) {
                     toData = this.toData
                     fromData = this.fromData
                     this.fromData = toData
@@ -488,7 +477,7 @@ class Tween {
         from: MutableMap<String, Number>,
         target: Any,
         time: Long,
-        elapsed: Long,
+        elapsed: Double,
         easing: (t: Double) -> Double
     ) {
 
@@ -503,109 +492,11 @@ class Tween {
 
 
     private fun setTargetValue(fieldName: String, value: Double) {
-        if (fieldName.isEmpty()) {
-            throw Error("${target::class.java.name} 要设置空属性的字段。值为: $value")
-        }
-        val field = getTargetField(targetClass, fieldName)
-        if (field != null) {
-            when (field.type) {
-                Double::class.java -> field.set(target, value)
-                Float::class.java -> field.set(target, value.toFloat())
-                Long::class.java -> field.set(target, value.toLong())
-                Int::class.java -> field.set(target, value.toInt())
-                Char::class.java -> field.set(target, value.toChar())
-                Short::class.java -> field.set(target, value.toInt().toShort())
-                Byte::class.java -> field.set(target, value.toInt().toByte())
-            }
-
-        } else {
-            val methodName =
-                "set${fieldName[0].toUpperCase() + fieldName.substring(1, fieldName.length)}"
-            val method = getTargetMethod(targetClass, methodName)
-            if (method != null) {
-                if (method.genericParameterTypes.isNotEmpty()) {
-                    when (method.genericParameterTypes[0]) {
-                        Double::class.java -> method.invoke(target, value)
-                        Float::class.java -> method.invoke(target, value.toFloat())
-                        Long::class.java -> method.invoke(target, value.toLong())
-                        Int::class.java -> method.invoke(target, value.toInt())
-                        Char::class.java -> method.invoke(target, value.toChar())
-                        Short::class.java -> method.invoke(target, value.toInt().toShort())
-                        Byte::class.java -> method.invoke(target, value.toInt().toByte())
-                    }
-
-                }
-            } else {
-                throw Error("${target::class.java.name} 没有 $fieldName 属性 或者 $methodName 方法")
-            }
-        }
-
-
+        mTargetValueInterface.setTargetValue(fieldName, value)
     }
 
     private fun getTargetValue(fieldName: String, toValue: Double): Number {
-        if (fieldName.isEmpty()) {
-            throw Error("${target::class.java.name} 要设置空属性的字段。值为: $toValue")
-        }
-
-        val field = getTargetField(targetClass, fieldName)
-        if (field != null) {
-            val value = field.get(target)
-            if (value is Number) {
-                return value
-            } else {
-                throw Error("${target::class.java.name} $fieldName 属性 类型不是number")
-            }
-        } else {
-            val methodName =
-                "get${fieldName[0].toUpperCase() + fieldName.substring(1, fieldName.length)}"
-            val method = getTargetMethod(targetClass, methodName)
-            if (method != null) {
-                val value = method.invoke(target)
-                if (value is Number) {
-                    return value
-                } else {
-                    throw Error("${target::class.java.name} $methodName 方法 获取的类型不是number")
-                }
-            } else {
-                throw Error("${target::class.java.name} 没有 $fieldName 属性 或者 $methodName 方法")
-            }
-
-        }
-    }
-
-    fun getTargetField(targetClass: Class<*>, name: String): Field? {
-        if (mTargetFieldMap[name] != null) {
-            return mTargetFieldMap[name]
-        }
-        try {
-            val field = targetClass.getField(name)
-            mTargetFieldMap[name] = field
-            field.isAccessible = true
-            return field
-        } catch (e: Exception) {
-            if (targetClass.superclass != null) {
-                return getTargetField(targetClass.superclass!!, name)
-            }
-        }
-        return null
-    }
-
-    fun getTargetMethod(targetClass: Class<*>, name: String): Method? {
-        if (mTargetMethodMap[name] != null) {
-            return mTargetMethodMap[name]
-        }
-        targetClass.methods.forEach {
-            if (it.name == name) {
-                mTargetMethodMap[name] = it
-                it.isAccessible = true
-                return it
-            }
-        }
-        if (targetClass.superclass != null) {
-            return getTargetMethod(targetClass.superclass!!, name)
-        }
-        return null
+        return mTargetValueInterface.getTargetValue(fieldName, toValue)
     }
 
 
@@ -621,20 +512,4 @@ class Tween {
             }
         }
     }
-}
-
-operator fun Number.minus(number: Number): Number {
-    return this.toDouble() - number.toDouble()
-}
-
-operator fun Number.plus(number: Number): Number {
-    return this.toDouble() + number.toDouble()
-}
-
-operator fun Number.times(number: Number): Number {
-    return this.toDouble() * number.toDouble()
-}
-
-operator fun Number.div(number: Number): Number {
-    return this.toDouble() / number.toDouble()
 }

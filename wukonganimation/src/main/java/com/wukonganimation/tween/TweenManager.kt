@@ -1,6 +1,5 @@
 package com.wukonganimation.tween
 
-import android.util.Log
 import java.util.*
 
 class TweenManager {
@@ -51,6 +50,32 @@ class TweenManager {
             return instance.createTween(target).setExpire(true)
         }
 
+        /**
+         * 是否暂停
+         */
+        var isPause = false
+            private set
+
+
+        /**
+         * 动画速度
+         */
+        var speed = 1.0
+
+        /**
+         * 暂停动画
+         */
+        fun pause(){
+            isPause = true
+        }
+
+        /**
+         * 恢复动画
+         */
+        fun resume(){
+            isPause = false
+        }
+
     }
 
 
@@ -61,7 +86,12 @@ class TweenManager {
         return tweens.isEmpty() && tweensToDelete.isEmpty()
     }
 
-    fun upDate(dt: Long) {
+    fun upDate(dtl: Long) {
+        if(isPause){
+            //如果暂停不执行动画
+            return
+        }
+        val dt = dtl * speed
 //        Log.e("wufuqi123", "  update $dt")
         tweens.forEach {
             if (it.active) {

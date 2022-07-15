@@ -533,6 +533,8 @@
 
 缓动函数计算引用 [tween.js](http://tweenjs.github.io/tween.js/) 的缓动函数。
 
+// adapted from https://github.com/tweenjs/tween.js/blob/9f8c56c4d5856a970b45895bb58cd9d1d56cf3ea/src/Easing.ts
+
 [缓动效果](http://tweenjs.github.io/tween.js/examples/03_graphs.html)
 
 默认的缓动函数为 Easing.linear() 

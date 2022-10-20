@@ -31,7 +31,7 @@
     请在 build.gradle 下添加依赖。
 
     ``` 
-        implementation 'io.github.wufuqi123:WuKongAnimation:1.0.3'
+        implementation 'io.github.wufuqi123:WuKongAnimation:1.0.4'
     ```
 
 

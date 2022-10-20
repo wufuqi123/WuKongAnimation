@@ -10,6 +10,9 @@ class TweenManager {
     //删除池
     private val tweensToDelete = Vector<Tween>()
 
+    //添加池，意味着下一帧添加，避免java.util.ConcurrentModificationException异常
+    private val tweensToAdd = Vector<Tween>()
+
 
     //    var mAnimationThread: AnimationThread? = null
     var mTweenAnimationHandler: TweenAnimationHandler? = null
@@ -65,14 +68,14 @@ class TweenManager {
         /**
          * 暂停动画
          */
-        fun pause(){
+        fun pause() {
             isPause = true
         }
 
         /**
          * 恢复动画
          */
-        fun resume(){
+        fun resume() {
             isPause = false
         }
 
@@ -83,16 +86,18 @@ class TweenManager {
      * 当前是否还有任务
      */
     fun isEmpty(): Boolean {
-        return tweens.isEmpty() && tweensToDelete.isEmpty()
+        return tweens.isEmpty() && tweensToDelete.isEmpty() && tweensToAdd.isEmpty()
     }
 
     fun upDate(dtl: Long) {
-        if(isPause){
+        if (isPause) {
             //如果暂停不执行动画
             return
         }
         val dt = dtl * speed
-//        Log.e("wufuqi123", "  update $dt")
+        tweens.addAll(tweensToAdd)
+        tweensToAdd.clear()
+
         tweens.forEach {
             if (it.active) {
                 it.update(dt)
@@ -101,6 +106,7 @@ class TweenManager {
                 it.remove()
             }
         }
+
         if (tweensToDelete.isNotEmpty()) {
             tweensToDelete.forEach {
                 tweens.remove(it)
@@ -139,16 +145,19 @@ class TweenManager {
     //把Tween 添加到 任务池里
     fun addTween(tween: Tween) {
         tween.manager = this
-        tweens.add(tween);
+        tweensToAdd.add(tween)
+//        tweens.add(tween)
     }
 
     //把Tween添加到 删除池里，下一帧删除
     fun removeTween(tween: Tween) {
         tweensToDelete.add(tween)
+        tweensToAdd.remove(tween)
     }
 
 
     fun destroy() {
+        tweensToAdd.clear()
         tweens.forEach {
             it.remove()
         }

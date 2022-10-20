@@ -18,6 +18,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".TestErrorActivity" />
         <activity android:name=".uikt.FadeToActivityKt" />
         <activity android:name=".uikt.FadeInActivityKt" />
         <activity android:name=".uikt.FadeOutActivityKt" />

@@ -39,7 +39,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val mActivityKTClassMap = mutableMapOf<String, Class<*>>().apply {
-        set(mButtonTexts[0], FadeToActivityKt::class.java)
+        set(mButtonTexts[0], TestErrorActivity::class.java)
+//        set(mButtonTexts[0], FadeToActivityKt::class.java)
         set(mButtonTexts[1], FadeInActivityKt::class.java)
         set(mButtonTexts[2], FadeOutActivityKt::class.java)
         set(mButtonTexts[3], MoveToActivityKt::class.java)

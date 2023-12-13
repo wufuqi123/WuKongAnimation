@@ -1,5 +1,6 @@
 package com.wukonganimation.action.extend
 
+import android.app.Activity
 import android.view.View
 import com.wukonganimation.action.ActionData
 import com.wukonganimation.action.RunAction
@@ -13,6 +14,21 @@ import com.wukonganimation.action.chained.SpawnActionRunBuild
 fun View.runAction(action: () -> ActionData) {
     RunAction.runAction(this, action)
 }
+
+/**
+ * 是否正在执行动画，检测单个view
+ */
+fun View.isRunningAction():Boolean {
+    return RunAction.isRunning(this)
+}
+
+/**
+ * 是否正在执行动画,检测整个activity
+ */
+fun Activity.isRunningAction():Boolean {
+    return RunAction.isRunning(this)
+}
+
 
 /**
  * 创建一个链式的action动画

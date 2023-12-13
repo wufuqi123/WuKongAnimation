@@ -31,7 +31,7 @@
     请在 build.gradle 下添加依赖。
 
     ``` 
-        implementation 'cn.wufuqi:WuKongAnimation:1.0.4'
+        implementation 'cn.wufuqi:WuKongAnimation:1.0.5'
     ```
 
 
@@ -599,6 +599,37 @@
     //设置动画全局恢复
     TweenManager.pause()
 
+```
+
+
+#### 检测动画是否正在运行
+
+
+
+tween检测是否运行
+
+``` java
+    //kotlin 写法
+    tween.isRunning
+    
+    //java写法
+    tween.isRunning()
+```
+
+action检测是否运行
+
+``` java
+    //kotlin 写法
+    //只检测单个控件
+    view.isRunningAction()
+    //检测整个界面
+    activity.isRunningAction()
+    
+    //java写法
+    //只检测单个控件
+    RunAction.isRunning(view)
+    //检测整个界面
+    RunAction.isRunning(activity)
 ```
 
 

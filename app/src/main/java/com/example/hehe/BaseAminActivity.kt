@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
+import com.wukonganimation.action.extend.isRunningAction
 import com.wukonganimation.action.extend.stopAction
 import com.wukonganimation.tween.Tween
 
@@ -50,6 +51,7 @@ open abstract class BaseAminActivity : Activity() {
 
         findViewById<TextView>(R.id.tv_title).text = "$languageName $aminName"
 
+        val tvIsRun = findViewById<TextView>(R.id.tv_is_run)
         mRunView = findViewById(R.id.tv_run)
 
         initRunView(mRunView)
@@ -73,7 +75,7 @@ open abstract class BaseAminActivity : Activity() {
 
         findViewById<View>(R.id.btn_tween).setOnClickListener {
             removeTween()
-            clickTweenBtn(mRunView)
+            mTween = clickTweenBtn(mRunView)
         }
 
         findViewById<View>(R.id.btn_action).setOnClickListener {
@@ -84,6 +86,20 @@ open abstract class BaseAminActivity : Activity() {
         findViewById<View>(R.id.btn_chained).setOnClickListener {
             removeTween()
             clickChainedBtn(mRunView)
+        }
+
+        findViewById<View>(R.id.btn_is_run).setOnClickListener {
+            var isRun = false
+            if(mTween!=null){
+                //说明正在执行  tween动画
+                isRun = mTween!!.isRunning
+            }
+            if(!isRun){
+                //不在执行tween动画检测是否在执行   Action 动画
+                isRun = mRunView.isRunningAction()
+            }
+
+            tvIsRun.text = "状态：${if (isRun)"运行" else "停止"}"
         }
 
 

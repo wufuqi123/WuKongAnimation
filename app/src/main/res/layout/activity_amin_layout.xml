@@ -68,10 +68,34 @@
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_btns"
         android:layout_marginTop="10dp"
         tools:text="重置"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_is_run"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/btn_reset"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_reset"
+        app:layout_constraintLeft_toLeftOf="@+id/btn_reset"
+        app:layout_constraintRight_toRightOf="@+id/btn_is_run"
+        android:gravity="center"
+        android:text="状态:停止"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_is_run"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_btns"
+        android:layout_marginTop="10dp"
+        android:text="检测运行状态"
         />
 
 

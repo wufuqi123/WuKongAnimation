@@ -44,7 +44,17 @@ class Tween {
     private var pingPongProperty: Boolean = false
 
     //是否已开启
-    private var isStarted: Boolean = false;
+    private var isStarted: Boolean = false
+
+    /**
+     * 是否正在执行
+     */
+    val isRunning:Boolean get() {
+        if(TweenManager.isPause){
+            return false
+        }
+        return !isEnded
+    }
 
     //是否已结束
     @JvmField

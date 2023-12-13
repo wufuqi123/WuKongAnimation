@@ -3,6 +3,7 @@ package com.wukonganimation.action
 import android.app.Activity
 import android.content.Context
 import android.view.View
+import com.wukonganimation.tween.TweenManager
 
 /**
  * 执行action 动画
@@ -68,6 +69,24 @@ object RunAction {
         }
         map?.clear()
         mViewActionMap.remove(activity)
+    }
+
+
+    /**
+     * 是否有activity动作正在运行
+     */
+    fun isRunning(activity: Activity): Boolean {
+        if (TweenManager.isPause) {
+            return false
+        }
+        return mViewActionMap[activity] != null
+    }
+
+    /**
+     * 是否有动作正在运行
+     */
+    fun isRunning(view: View): Boolean {
+        return mViewActionMap[view.context]?.get(view) != null
     }
 
 

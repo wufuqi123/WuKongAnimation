@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HeHe">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,6 +41,7 @@
         <activity android:name=".uikt.TweenEventActivityKt" />
         <activity android:name=".uikt.TweenSlowFunctionActivityKt" />
         <activity android:name=".uikt.TweenManagerActivityKt" />
+        <activity android:name=".uikt.NativeVsTweenCompareActivityKt" />
 
         <activity android:name=".ui.FadeToActivity" />
         <activity android:name=".ui.FadeInActivity" />

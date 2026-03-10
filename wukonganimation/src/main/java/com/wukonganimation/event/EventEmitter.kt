@@ -28,11 +28,7 @@ open class EventEmitter {
      * @param eventName 事件名
      */
     private fun getFuncsNoNull(eventName: String): MutableList<ListenerBean> {
-        var funcs = mEventMaps[eventName]
-        if (funcs == null) {
-            funcs = mutableListOf()
-        }
-        return funcs
+        return mEventMaps.getOrPut(eventName) { mutableListOf() }
     }
 
 
@@ -63,25 +59,56 @@ open class EventEmitter {
     /**
      * 发出事件
      * @param eventName 事件名
+     */
+    fun emit(eventName: String) {
+        val funcs = mEventMaps[eventName]
+        if (funcs.isNullOrEmpty()) {
+            return
+        }
+        emitToListeners(funcs, mutableListOf())
+    }
+
+    /**
+     * 发出事件，并携带一个参数
+     * @param eventName 事件名
+     * @param param 携带的参数
+     */
+    fun emit(eventName: String, param: Any) {
+        val funcs = mEventMaps[eventName]
+        if (funcs.isNullOrEmpty()) {
+            return
+        }
+        emitToListeners(funcs, mutableListOf(param))
+    }
+
+    /**
+     * 发出事件，并携带多个参数
+     * @param eventName 事件名
      * @param params 携带的参数
      */
     fun emit(eventName: String, vararg params: Any) {
         val funcs = mEventMaps[eventName]
-        val paramList = mutableListOf<Any>()
+        if (funcs.isNullOrEmpty()) {
+            return
+        }
+        val paramList = ArrayList<Any>(params.size)
         for (i in params.indices) {
             paramList.add(params[i])
         }
-        val removeFuns = mutableListOf<ListenerBean>()
-        funcs?.forEach {
-            if (it.type == EventType.ONE) {
-                removeFuns.add(it)
-            }
-            it.func.invoke(paramList)
-        }
-        removeFuns.forEach {
-            funcs?.remove(it)
-        }
+        emitToListeners(funcs, paramList)
+    }
 
+    private fun emitToListeners(funcs: MutableList<ListenerBean>, params: MutableList<Any>) {
+        var index = 0
+        while (index < funcs.size) {
+            val listener = funcs[index]
+            listener.func.invoke(params)
+            if (listener.type == EventType.ONE) {
+                funcs.removeAt(index)
+            } else {
+                index++
+            }
+        }
     }
 
 
@@ -91,15 +118,11 @@ open class EventEmitter {
      * @param listener 事件触发回调
      */
     fun off(eventName: String, listener: (param: MutableList<Any>) -> Unit) {
-        val funcs = mEventMaps[eventName]
-        val removeFuns = mutableListOf<ListenerBean>()
-        funcs?.forEach {
-            if (it.func == listener) {
-                removeFuns.add(it)
+        val funcs = mEventMaps[eventName] ?: return
+        for (index in funcs.lastIndex downTo 0) {
+            if (funcs[index].func == listener) {
+                funcs.removeAt(index)
             }
-        }
-        removeFuns.forEach {
-            funcs?.remove(it)
         }
     }
 

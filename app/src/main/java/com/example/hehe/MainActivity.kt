@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         add("tween-event")
         add("tween-Slow function")
         add("TweenManager")
+        add("native-vs-current")
     }
 
     private val mActivityKTClassMap = mutableMapOf<String, Class<*>>().apply {
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         set(mButtonTexts[19], TweenEventActivityKt::class.java)
         set(mButtonTexts[20], TweenSlowFunctionActivityKt::class.java)
         set(mButtonTexts[21], TweenManagerActivityKt::class.java)
+        set(mButtonTexts[22], NativeVsTweenCompareActivityKt::class.java)
     }
 
     private val mActivityClassMap = mutableMapOf<String, Class<*>>().apply {
@@ -87,6 +89,7 @@ class MainActivity : AppCompatActivity() {
         set(mButtonTexts[19], TweenEventActivityKt::class.java)
         set(mButtonTexts[20], TweenSlowFunctionActivityKt::class.java)
         set(mButtonTexts[21], TweenManagerActivityKt::class.java)
+        set(mButtonTexts[22], NativeVsTweenCompareActivityKt::class.java)
     }
 
     lateinit var mAdapter: MainRecyclerAdapter

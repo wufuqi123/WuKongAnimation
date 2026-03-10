@@ -1,0 +1,4 @@
+[TargetValueReflect benchmark] field set: current=10 ns/op, legacy=9 ns/op, speedup=0.91x, improvement=-9.4%
+[TargetValueReflect benchmark] field get: current=17 ns/op, legacy=10 ns/op, speedup=0.57x, improvement=-75.0%
+[TargetValueReflect benchmark] method set: current=8 ns/op, legacy=4238 ns/op, speedup=539.47x, improvement=99.8%
+[TargetValueReflect benchmark] method get: current=9 ns/op, legacy=4210 ns/op, speedup=453.70x, improvement=99.8%

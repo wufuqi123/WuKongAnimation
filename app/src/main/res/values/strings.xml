@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">WuKongAnimation</string>
+    <string name="native_vs_tween_title">Native animation vs WuKong current</string>
+    <string name="native_vs_tween_tip">先用同时播放看动画差异，再用性能对比顺序跑多轮。支持单一动画和复杂组合动画，也能比较 10 / 100 / 1000 / 2000 / 3000 个 view 同时执行。</string>
+    <string name="native_vs_tween_status_idle">状态：已重置。先用“同时播放”看轨迹，再用“跑性能对比”看 10、100、1000、2000 或 3000 个 view 同时执行的数据。</string>
+    <string name="native_vs_tween_status_visual">状态：同时播放原生动画和 WuKong current，方便肉眼对比轨迹、结束状态和多 view 一起执行时的表现。</string>
+    <string name="native_vs_tween_status_cancelled">状态：已取消性能对比。</string>
+    <string name="native_vs_tween_status_benchmark">状态：预热 1 次后，按顺序分别测试 %1$s 场景下 %2$d 个 view 同时执行的 WuKong current 和原生动画，共 %3$d 轮。</string>
+    <string name="native_vs_tween_result_tween_idle">WuKong current：
+尚未运行</string>
+    <string name="native_vs_tween_result_native_idle">Android native：
+尚未运行</string>
+    <string name="native_vs_tween_compare_done">状态：%1$s 场景下 %2$d 个 view 性能对比完成。%3$s 平均总耗时更低。
+WuKong current 平均耗时 %4$.2f ms，Native 平均耗时 %5$.2f ms。</string>
+    <string name="native_vs_tween_label_duration">duration(ms)</string>
+    <string name="native_vs_tween_label_iterations">iterations</string>
+    <string name="native_vs_tween_label_target_count">view count</string>
+    <string name="native_vs_tween_btn_visual">同时播放</string>
+    <string name="native_vs_tween_btn_benchmark">跑性能对比</string>
+    <string name="native_vs_tween_btn_reset">重置</string>
+    <string name="native_vs_tween_scenario_move">moveX</string>
+    <string name="native_vs_tween_scenario_alpha">alpha</string>
+    <string name="native_vs_tween_scenario_scale">scale</string>
+    <string name="native_vs_tween_scenario_rotation">rotation</string>
+    <string name="native_vs_tween_scenario_complex_combo">complex-combo</string>
+    <string name="native_vs_tween_count_10">10</string>
+    <string name="native_vs_tween_count_100">100</string>
+    <string name="native_vs_tween_count_1000">1000</string>
+    <string name="native_vs_tween_count_2000">2000</string>
+    <string name="native_vs_tween_count_3000">3000</string>
+    <string name="native_vs_tween_prepare_in_progress">目标准备中：0 / 0</string>
+    <string name="native_vs_tween_prepare_progress">目标准备中：%1$d / %2$d。为避免瞬时创建卡顿，播放和压测会在准备完成后开放。</string>
+    <string name="native_vs_tween_prepare_ready">目标已就绪：%1$d 个 view。现在开始播放或压测不会再被临时创建打断。</string>
+    <string name="native_vs_tween_panel_tween">WuKong current</string>
+    <string name="native_vs_tween_panel_native">Android native</string>
+    <string name="native_vs_tween_stats_template">%1$s：
+平均总耗时：%2$.2f ms
+平均帧间隔：%3$.2f ms
+最大帧间隔：%4$.2f ms
+平均 FPS：%5$.2f
+平均卡顿帧：%6$.2f</string>
 </resources>

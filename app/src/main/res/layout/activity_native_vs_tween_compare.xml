@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".uikt.NativeVsTweenCompareActivityKt">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/native_vs_tween_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/native_vs_tween_tip" />
+
+        <RadioGroup
+            android:id="@+id/rg_scenario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb_move"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/native_vs_tween_scenario_move" />
+
+            <RadioButton
+                android:id="@+id/rb_alpha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/native_vs_tween_scenario_alpha" />
+
+            <RadioButton
+                android:id="@+id/rb_scale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/native_vs_tween_scenario_scale" />
+
+            <RadioButton
+                android:id="@+id/rb_rotation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/native_vs_tween_scenario_rotation" />
+
+            <RadioButton
+                android:id="@+id/rb_complex_combo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/native_vs_tween_scenario_complex_combo" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/ll_inputs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/native_vs_tween_label_duration" />
+
+            <EditText
+                android:id="@+id/et_duration"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:ems="4"
+                android:inputType="number"
+                android:text="600" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/native_vs_tween_label_iterations" />
+
+            <EditText
+                android:id="@+id/et_iterations"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:ems="3"
+                android:inputType="number"
+                android:text="5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_target_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/native_vs_tween_label_target_count" />
+
+            <HorizontalScrollView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:fillViewport="false"
+                android:scrollbars="none">
+
+                <RadioGroup
+                    android:id="@+id/rg_target_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_target_10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/native_vs_tween_count_10" />
+
+                    <RadioButton
+                        android:id="@+id/rb_target_100"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/native_vs_tween_count_100" />
+
+                    <RadioButton
+                        android:id="@+id/rb_target_1000"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/native_vs_tween_count_1000" />
+
+                    <RadioButton
+                        android:id="@+id/rb_target_2000"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/native_vs_tween_count_2000" />
+
+                    <RadioButton
+                        android:id="@+id/rb_target_3000"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/native_vs_tween_count_3000" />
+                </RadioGroup>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_prepare_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/native_vs_tween_prepare_in_progress" />
+
+        <LinearLayout
+            android:id="@+id/ll_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_run_visual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/native_vs_tween_btn_visual"
+                android:textAllCaps="false" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_run_benchmark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:text="@string/native_vs_tween_btn_benchmark"
+                android:textAllCaps="false" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:text="@string/native_vs_tween_btn_reset"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/native_vs_tween_status_idle" />
+
+        <LinearLayout
+            android:id="@+id/ll_targets"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#EFEFEF">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/native_vs_tween_panel_tween" />
+
+                <FrameLayout
+                    android:id="@+id/fl_tween_targets"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="8dp" />
+            </FrameLayout>
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="match_parent" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#EFEFEF">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/native_vs_tween_panel_native" />
+
+                <FrameLayout
+                    android:id="@+id/fl_native_targets"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="8dp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_tween_result"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#FFF3E0"
+                android:padding="12dp"
+                android:text="@string/native_vs_tween_result_tween_idle"
+                android:textIsSelectable="true" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_native_result"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#E8EAF6"
+                android:padding="12dp"
+                android:text="@string/native_vs_tween_result_native_idle"
+                android:textIsSelectable="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

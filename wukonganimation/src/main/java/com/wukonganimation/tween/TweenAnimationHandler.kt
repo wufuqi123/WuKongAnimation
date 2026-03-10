@@ -4,13 +4,11 @@ package com.wukonganimation.tween
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.os.SystemClock
 import android.view.Choreographer
-import java.util.*
 
 class TweenAnimationHandler(var mTweenManager: TweenManager) {
 
-    private var lastTime: Long = 0
+    private var lastFrameTimeNanos: Long = 0L
 
     private var isDestroy = false
 
@@ -31,15 +29,19 @@ class TweenAnimationHandler(var mTweenManager: TweenManager) {
 
     private val doFrame = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
-            val frameTime = SystemClock.uptimeMillis()
-            val dt = frameTime - lastTime
-            lastTime = frameTime
-            if (this@TweenAnimationHandler.mTweenManager.isEmpty() || isDestroy) {
+            if (isDestroy) {
                 isStart = false
                 return
             }
-            Choreographer.getInstance().postFrameCallback(this)
+            val dt = if (lastFrameTimeNanos == 0L) 0L else (frameTimeNanos - lastFrameTimeNanos) / 1_000_000L
+            lastFrameTimeNanos = frameTimeNanos
             update(dt)
+            if (this@TweenAnimationHandler.mTweenManager.isEmpty() || isDestroy) {
+                isStart = false
+                lastFrameTimeNanos = 0L
+                return
+            }
+            Choreographer.getInstance().postFrameCallback(this)
         }
 
     }
@@ -48,23 +50,25 @@ class TweenAnimationHandler(var mTweenManager: TweenManager) {
         mTweenManager.upDate(dt)
     }
 
+    fun postToMain(action: () -> Unit) {
+        mHandler.post(action)
+    }
+
     fun start() {
-        if (isStart) {
-            return
-        }
-        isStart = true
-        mHandler.post {
+        postToMain {
             //保证在主线程执行
-            if (isDestroy) {
-                return@post
+            if (isDestroy || isStart) {
+                return@postToMain
             }
-            lastTime = SystemClock.uptimeMillis()
+            isStart = true
+            lastFrameTimeNanos = 0L
             Choreographer.getInstance().postFrameCallback(doFrame)
         }
     }
 
     fun destroy() {
         isStart = false
+        lastFrameTimeNanos = 0L
         val message = Message()
         message.what = mDestroyWhat
         message.obj = mDestroyMessage

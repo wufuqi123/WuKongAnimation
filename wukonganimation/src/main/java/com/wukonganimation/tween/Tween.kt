@@ -9,13 +9,28 @@ class Tween {
     var target: Any
     var mTargetValueInterface: TargetValueAbstract
 
-    private val eventEmitter by lazy {
-        EventEmitter()
-    }
-
-
     @JvmField
     var manager: TweenManager? = null
+
+    private var eventEmitter: EventEmitter? = null
+
+    private fun getOrCreateEventEmitter(): EventEmitter {
+        val existing = eventEmitter
+        if (existing != null) {
+            return existing
+        }
+        val created = EventEmitter()
+        eventEmitter = created
+        return created
+    }
+
+    private fun emitEvent(eventName: String) {
+        eventEmitter?.emit(eventName)
+    }
+
+    private fun emitEvent(eventName: String, param: Any) {
+        eventEmitter?.emit(eventName, param)
+    }
 
     //执行的总时间
     private var countTime: Long = 0
@@ -26,6 +41,8 @@ class Tween {
 
     //使用的算法
     private var easingProperty: (t: Double) -> Double = Easing.linear()
+    private var easingDoubleProperty: Easing.DoubleEasing? = Easing.linear() as? Easing.DoubleEasing
+    private var easingFloatProperty: Easing.FloatEasing? = Easing.linear() as? Easing.FloatEasing
 
     //执行完一次后  是否从内存内清理出来
     @JvmField
@@ -58,10 +75,10 @@ class Tween {
 
     //是否已结束
     @JvmField
-    var isEnded: Boolean = false;
+    var isEnded: Boolean = false
 
     //是否调用了 start方法，用来判断restart回调
-    private var isUseStartFun: Boolean = false;
+    private var isUseStartFun: Boolean = false
 
     //要执行到某个值的参数容器
     private var toData: MutableMap<String, Number> = mutableMapOf()
@@ -76,16 +93,51 @@ class Tween {
     private var currElapsedTime: Double = 0.0
 
     //当前重复的次数
-    private var currRepeat: Int = 0;
+    private var currRepeat: Int = 0
 
     //当前是不是PingPong
-    private var currPingPong: Boolean = false;
+    private var currPingPong: Boolean = false
 
     //扩展的Tween，当前的Tween执行完成后会立刻执行此扩展的Tween
     private var chainTween: Tween? = null
 
     private var _updateDeltaOffsetFun: ((t: Double) -> Double)? = null
 
+    private var propertyStateCount = 0
+    private var propertyAccessors = arrayOfNulls<TargetValueAbstract.BoundPropertyAccessor>(0)
+    private var propertyFloatAccessors = arrayOfNulls<TargetValueAbstract.FloatBoundPropertyAccessor>(0)
+    private var propertyBeginValues = DoubleArray(0)
+    private var propertyChangeValues = DoubleArray(0)
+    private var propertyBeginFloatValues = FloatArray(0)
+    private var propertyChangeFloatValues = FloatArray(0)
+    private var propertyUseFloatPath = BooleanArray(0)
+
+    private fun ensurePropertyStateCapacity(requiredSize: Int) {
+        if (propertyAccessors.size >= requiredSize) {
+            return
+        }
+        val newSize = maxOf(requiredSize, propertyAccessors.size.coerceAtLeast(4) * 2)
+        propertyAccessors = propertyAccessors.copyOf(newSize)
+        propertyFloatAccessors = propertyFloatAccessors.copyOf(newSize)
+        propertyBeginValues = propertyBeginValues.copyOf(newSize)
+        propertyChangeValues = propertyChangeValues.copyOf(newSize)
+        propertyBeginFloatValues = propertyBeginFloatValues.copyOf(newSize)
+        propertyChangeFloatValues = propertyChangeFloatValues.copyOf(newSize)
+        propertyUseFloatPath = propertyUseFloatPath.copyOf(newSize)
+    }
+
+    private fun clearPropertyTweenStates() {
+        var index = 0
+        while (index < propertyStateCount) {
+            propertyAccessors[index] = null
+            propertyFloatAccessors[index] = null
+            propertyUseFloatPath[index] = false
+            index++
+        }
+        propertyStateCount = 0
+    }
+
+    // ...existing code...
     constructor(target: Any, manager: TweenManager? = null) {
         this.target = target
         mTargetValueInterface = TargetValueManager.createTargetValue(target)
@@ -101,6 +153,14 @@ class Tween {
         return this
     }
 
+    private fun startChainedTween() {
+        val nextTween = chainTween ?: return
+        val currentManager = manager
+        if (currentManager != null && nextTween.manager !== currentManager) {
+            nextTween.addTo(currentManager)
+        }
+        nextTween.start()
+    }
 
     /**
      * 设置执行的总时间
@@ -117,6 +177,8 @@ class Tween {
      */
     fun easing(easingProperty: (t: Double) -> Double): Tween {
         this.easingProperty = easingProperty
+        this.easingDoubleProperty = easingProperty as? Easing.DoubleEasing
+        this.easingFloatProperty = easingProperty as? Easing.FloatEasing
         return this
     }
 
@@ -161,6 +223,9 @@ class Tween {
      * 开始动画
      */
     fun start(): Tween {
+        if (enqueueOnManagerThread { start() }) {
+            return this
+        }
         if (this.active) {
             return this
         }
@@ -177,11 +242,14 @@ class Tween {
      * 结束动画
      */
     fun stop(): Tween {
+        if (enqueueOnManagerThread { stop() }) {
+            return this
+        }
         if (!this.active) {
             return this
         }
         this.active = false
-        this.eventEmitter.emit(TweenManager.EVENT_STOP)
+        emitEvent(TweenManager.EVENT_STOP)
         return this
     }
 
@@ -191,6 +259,7 @@ class Tween {
      */
     fun to(data: MutableMap<String, Number>): Tween {
         this.toData = data
+        clearPropertyTweenStates()
         return this
     }
 
@@ -200,6 +269,7 @@ class Tween {
      */
     fun from(data: MutableMap<String, Number>): Tween {
         this.fromData = data
+        clearPropertyTweenStates()
         return this
     }
 
@@ -207,6 +277,9 @@ class Tween {
      * 从任务队列里删除
      */
     fun remove(): Tween {
+        if (enqueueOnManagerThread { remove() }) {
+            return this
+        }
         if (this.manager == null) return this
         stop()
         this.manager?.removeTween(this)
@@ -232,7 +305,10 @@ class Tween {
      * @param listener 事件触发回调
      */
     fun on(eventName: String, listener: (param: MutableList<Any>) -> Unit): Tween {
-        this.eventEmitter.on(eventName, listener)
+        if (enqueueOnManagerThread { on(eventName, listener) }) {
+            return this
+        }
+        getOrCreateEventEmitter().on(eventName, listener)
         return this
     }
 
@@ -243,7 +319,10 @@ class Tween {
      * @param listener 事件触发回调
      */
     fun once(eventName: String, listener: (param: MutableList<Any>) -> Unit): Tween {
-        this.eventEmitter.once(eventName, listener)
+        if (enqueueOnManagerThread { once(eventName, listener) }) {
+            return this
+        }
+        getOrCreateEventEmitter().once(eventName, listener)
         return this
     }
 
@@ -253,7 +332,10 @@ class Tween {
      * @param listener 事件触发回调
      */
     fun off(eventName: String, listener: (param: MutableList<Any>) -> Unit): Tween {
-        this.eventEmitter.off(eventName, listener)
+        if (enqueueOnManagerThread { off(eventName, listener) }) {
+            return this
+        }
+        eventEmitter?.off(eventName, listener)
         return this
     }
 
@@ -262,16 +344,22 @@ class Tween {
      * @param eventName 事件名
      */
     fun off(eventName: String): Tween {
-        this.eventEmitter.off(eventName)
+        if (enqueueOnManagerThread { off(eventName) }) {
+            return this
+        }
+        eventEmitter?.off(eventName)
         return this
     }
-
 
     /**
      * 取消全部事件
      */
     fun offAll(): Tween {
-        this.eventEmitter.offAll()
+        if (enqueueOnManagerThread { offAll() }) {
+            return this
+        }
+        eventEmitter?.offAll()
+        eventEmitter = null
         return this
     }
 
@@ -282,7 +370,7 @@ class Tween {
     fun clear(): Tween {
         countTime = 0
         active = false
-        easingProperty = Easing.linear()
+        easing(Easing.linear())
         expire = false
         countRepeat = 0
         loop = false
@@ -292,6 +380,7 @@ class Tween {
         isEnded = false
         toData.clear()
         fromData.clear()
+        clearPropertyTweenStates()
         currDelayTime = 0.0
         currElapsedTime = 0.0
         currRepeat = 0
@@ -315,6 +404,7 @@ class Tween {
             this.toData = fromData
             this.fromData = toData
             currPingPong = false
+            rebuildPropertyTweenStates()
         }
         return this
     }
@@ -322,19 +412,30 @@ class Tween {
     // 解析数据
     private fun parseData() {
         if (isStarted) return
-        _parseRecursiveData(toData, fromData, target)
+        _parseRecursiveData(toData, fromData)
+        rebuildPropertyTweenStates()
     }
 
     //设置参数
     private fun apply(time: Long) {
-        _recursiveApplyTween(
-            this.toData,
-            this.fromData,
-            this.target,
-            time,
-            this.currElapsedTime,
-            this.easingProperty
-        )
+        val progress = this.currElapsedTime / time.toDouble()
+        val easedProgress = easingDoubleProperty?.apply(progress) ?: this.easingProperty(progress)
+        val progressFloat = progress.toFloat()
+        val easedProgressFloat = easingFloatProperty?.applyFloat(progressFloat) ?: easedProgress.toFloat()
+
+        var index = 0
+        while (index < propertyStateCount) {
+            if (propertyUseFloatPath[index]) {
+                propertyFloatAccessors[index]!!.setFloat(
+                    propertyBeginFloatValues[index] + propertyChangeFloatValues[index] * easedProgressFloat
+                )
+            } else {
+                propertyAccessors[index]!!.set(
+                    propertyBeginValues[index] + propertyChangeValues[index] * easedProgress
+                )
+            }
+            index++
+        }
     }
 
     //当前是否能执行  update
@@ -354,30 +455,26 @@ class Tween {
         if (!isStarted) {
             parseData()
             isStarted = true
-            this.eventEmitter.emit(TweenManager.EVENT_START)
+            emitEvent(TweenManager.EVENT_START)
         } else {
             if (isUseStartFun) {
-                this.eventEmitter.emit(TweenManager.EVENT_RESTART)
+                emitEvent(TweenManager.EVENT_RESTART)
             }
         }
         isUseStartFun = false
-        this.eventEmitter.emit(TweenManager.EVENT_UPDATE, 0)
+        emitEvent(TweenManager.EVENT_UPDATE, 0)
         if (pingPongProperty) {
-            this.eventEmitter.emit(TweenManager.EVENT_PINGPONG)
-            this.eventEmitter.emit(TweenManager.EVENT_UPDATE, 0)
+            emitEvent(TweenManager.EVENT_PINGPONG)
+            emitEvent(TweenManager.EVENT_UPDATE, 0)
         }
         isEnded = true
         active = false
-        //如果是  pingPong  则  不设置
         if (!pingPongProperty) {
             currElapsedTime = 1.0
             this.apply(1)
-            if (chainTween != null && manager != null) {
-                chainTween!!.addTo(manager!!)
-                chainTween!!.start()
-            }
+            startChainedTween()
         }
-        this.eventEmitter.emit(TweenManager.EVENT_END)
+        emitEvent(TweenManager.EVENT_END)
     }
 
 
@@ -412,13 +509,13 @@ class Tween {
         if (!this.isStarted) {
             this.parseData()
             this.isStarted = true
-            this.eventEmitter.emit(TweenManager.EVENT_START)
+            emitEvent(TweenManager.EVENT_START)
         } else {
             if (this.isUseStartFun) {
-                this.eventEmitter.emit(TweenManager.EVENT_RESTART)
+                emitEvent(TweenManager.EVENT_RESTART)
             }
         }
-        this.isUseStartFun = false;
+        this.isUseStartFun = false
         val time = if (this.pingPongProperty) this.countTime / 2 else this.countTime
         if (time > this.currElapsedTime) {
             val t = this.currElapsedTime + deltaMS
@@ -429,24 +526,24 @@ class Tween {
 
             val realElapsed =
                 if (this.currPingPong) time + this.currElapsedTime else this.currElapsedTime
-            this.eventEmitter.emit(TweenManager.EVENT_UPDATE, realElapsed)
+            emitEvent(TweenManager.EVENT_UPDATE, realElapsed)
 
             if (ended) {
                 if (this.pingPongProperty && !this.currPingPong) {
-                    this.currPingPong = true
                     toData = this.toData
                     fromData = this.fromData
                     this.fromData = toData
                     this.toData = fromData
+                    rebuildPropertyTweenStates()
 
-                    this.eventEmitter.emit(TweenManager.EVENT_PINGPONG)
+                    emitEvent(TweenManager.EVENT_PINGPONG)
                     this.currElapsedTime = 0.0
                     return
                 }
 
                 if (this.loop || this.countRepeat > this.currRepeat) {
                     this.currRepeat++
-                    this.eventEmitter.emit(TweenManager.EVENT_ERPEAT, this.currRepeat)
+                    emitEvent(TweenManager.EVENT_ERPEAT, this.currRepeat)
                     this.currElapsedTime = 0.0
 
                     if (this.pingPongProperty && this.currPingPong) {
@@ -454,6 +551,7 @@ class Tween {
                         fromData = this.fromData
                         this.toData = fromData
                         this.fromData = toData
+                        rebuildPropertyTweenStates()
 
                         this.currPingPong = false
                     }
@@ -469,33 +567,54 @@ class Tween {
                     fromData = this.fromData
                     this.fromData = toData
                     this.toData = fromData
+                    rebuildPropertyTweenStates()
                 }
-                this.eventEmitter.emit(TweenManager.EVENT_END)
-
-                if (this.chainTween != null && this.manager != null) {
-                    this.chainTween!!.addTo(this.manager!!)
-                    this.chainTween!!.start()
-                }
+                emitEvent(TweenManager.EVENT_END)
+                startChainedTween()
             }
             return
         }
     }
 
+    private fun rebuildPropertyTweenStates() {
+        clearPropertyTweenStates()
+        if (toData.isEmpty()) {
+            return
+        }
+        ensurePropertyStateCapacity(toData.size)
+        for ((fieldName, toValue) in toData) {
+            val accessor = mTargetValueInterface.bindProperty(fieldName)
+            val beginNumber = fromData[fieldName] ?: accessor.get(toValue.toDouble())
+            if (fromData[fieldName] == null) {
+                fromData[fieldName] = beginNumber
+            }
+            val index = propertyStateCount
+            propertyAccessors[index] = accessor
+            val floatAccessor = accessor as? TargetValueAbstract.FloatBoundPropertyAccessor
+            propertyFloatAccessors[index] = floatAccessor
+            propertyUseFloatPath[index] = floatAccessor != null
+
+            val beginDouble = beginNumber.toDouble()
+            propertyBeginValues[index] = beginDouble
+            propertyChangeValues[index] = toValue.toDouble() - beginDouble
+
+            val beginFloat = beginNumber.toFloat()
+            propertyBeginFloatValues[index] = beginFloat
+            propertyChangeFloatValues[index] = toValue.toFloat() - beginFloat
+            propertyStateCount++
+        }
+    }
 
     private fun _recursiveApplyTween(
         to: MutableMap<String, Number>,
         from: MutableMap<String, Number>,
-        target: Any,
-        time: Long,
-        elapsed: Double,
-        easing: (t: Double) -> Double
+        easedProgress: Double
     ) {
 
         to.forEach {
             val b = from[it.key]!!.toDouble()
             val c = to[it.key]!!.toDouble() - from[it.key]!!.toDouble()
-            val t = elapsed / time.toDouble()
-            val value = b + c * easing(t)
+            val value = b + c * easedProgress
             setTargetValue(it.key, value)
         }
     }
@@ -512,8 +631,7 @@ class Tween {
 
     private fun _parseRecursiveData(
         to: MutableMap<String, Number>,
-        from: MutableMap<String, Number>,
-        target: Any
+        from: MutableMap<String, Number>
     ) {
 
         to.forEach {
@@ -521,5 +639,14 @@ class Tween {
                 from[it.key] = getTargetValue(it.key, it.value.toDouble())
             }
         }
+    }
+
+    private fun enqueueOnManagerThread(action: () -> Unit): Boolean {
+        val currentManager = this.manager ?: return false
+        if (currentManager.isMainThread()) {
+            return false
+        }
+        currentManager.enqueueOperation(action)
+        return true
     }
 }

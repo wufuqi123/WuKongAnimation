@@ -23,7 +23,6 @@ class TargetValueView(private val target: View) : TargetValueAbstract() {
         )
     }
 
-
     /**
      * 可以更改的属性
      */
@@ -34,8 +33,71 @@ class TargetValueView(private val target: View) : TargetValueAbstract() {
      */
     private val mNoChangeFieldNames = mutableSetOf<String>()
 
-
     private val mTargetValueReflect: TargetValueReflect = TargetValueReflect(target)
+
+    private val xAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.x = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.x
+    }
+
+    private val yAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.y = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.y
+    }
+
+    private val scaleXAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.scaleX = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.scaleX
+    }
+
+    private val scaleYAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.scaleY = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.scaleY
+    }
+
+    private val rotationAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.rotation = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.rotation
+    }
+
+    private val rotationXAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.rotationX = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.rotationX
+    }
+
+    private val rotationYAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.rotationY = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.rotationY
+    }
+
+    private val alphaAccessor = object : FloatBoundPropertyAccessor {
+        override fun setFloat(value: Float) {
+            target.alpha = value
+        }
+
+        override fun getFloat(toValue: Float): Float = target.alpha
+    }
 
     /**
      * 判断是否为可以更改的属性
@@ -56,7 +118,6 @@ class TargetValueView(private val target: View) : TargetValueAbstract() {
         mNoChangeFieldNames.add(fieldName)
         return false
     }
-
 
     override fun setTargetValue(fieldName: String, value: Double) {
         if (fieldName.isEmpty()) {
@@ -102,5 +163,25 @@ class TargetValueView(private val target: View) : TargetValueAbstract() {
         super.clear()
         mMayChangeFieldNames.clear()
         mNoChangeFieldNames.clear()
+    }
+
+    override fun bindProperty(fieldName: String): BoundPropertyAccessor {
+        if (fieldName.isEmpty()) {
+            throw Error("${target::class.java.name} 要设置空属性的字段。值为: 0.0")
+        }
+        if (!isChangeField(fieldName)) {
+            return mTargetValueReflect.bindProperty(fieldName)
+        }
+        return when (fieldName) {
+            "x" -> xAccessor
+            "y" -> yAccessor
+            "scaleX" -> scaleXAccessor
+            "scaleY" -> scaleYAccessor
+            "rotation" -> rotationAccessor
+            "rotationX" -> rotationXAccessor
+            "rotationY" -> rotationYAccessor
+            "alpha" -> alphaAccessor
+            else -> mTargetValueReflect.bindProperty(fieldName)
+        }
     }
 }

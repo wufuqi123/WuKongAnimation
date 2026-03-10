@@ -1,18 +1,20 @@
 package com.wukonganimation.tween
 
-import java.util.*
+import android.os.Looper
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class TweenManager {
 
     //Tween任务池
-    private val tweens = Vector<Tween>()
+    private val tweens = ArrayList<Tween>()
 
     //删除池
-    private val tweensToDelete = Vector<Tween>()
+    private val tweensToDelete = ArrayList<Tween>()
 
     //添加池，意味着下一帧添加，避免java.util.ConcurrentModificationException异常
-    private val tweensToAdd = Vector<Tween>()
+    private val tweensToAdd = ArrayList<Tween>()
 
+    private val pendingOperations = ConcurrentLinkedQueue<() -> Unit>()
 
     //    var mAnimationThread: AnimationThread? = null
     var mTweenAnimationHandler: TweenAnimationHandler? = null
@@ -34,7 +36,7 @@ class TweenManager {
         const val EVENT_STOP = "stop"
 
 
-        private val instance by lazy(LazyThreadSafetyMode.NONE) {
+        private val instance by lazy {
             TweenManager()
         }
 
@@ -56,6 +58,7 @@ class TweenManager {
         /**
          * 是否暂停
          */
+        @Volatile
         var isPause = false
             private set
 
@@ -63,6 +66,7 @@ class TweenManager {
         /**
          * 动画速度
          */
+        @Volatile
         var speed = 1.0
 
         /**
@@ -82,37 +86,83 @@ class TweenManager {
     }
 
 
+    internal fun isMainThread(): Boolean {
+        return Looper.myLooper() == Looper.getMainLooper()
+    }
+
+    internal fun enqueueOperation(operation: () -> Unit) {
+        if (isMainThread()) {
+            operation.invoke()
+            return
+        }
+        pendingOperations.add(operation)
+        runAnimation()
+    }
+
+    private fun drainPendingOperations() {
+        while (true) {
+            val operation = pendingOperations.poll() ?: break
+            operation.invoke()
+        }
+    }
+
     /**
      * 当前是否还有任务
      */
     fun isEmpty(): Boolean {
-        return tweens.isEmpty() && tweensToDelete.isEmpty() && tweensToAdd.isEmpty()
+        return tweens.isEmpty() && tweensToDelete.isEmpty() && tweensToAdd.isEmpty() && pendingOperations.isEmpty()
     }
 
     fun upDate(dtl: Long) {
+        drainPendingOperations()
         if (isPause) {
             //如果暂停不执行动画
             return
         }
         val dt = dtl * speed
-        tweens.addAll(tweensToAdd)
-        tweensToAdd.clear()
+        if (tweensToAdd.isNotEmpty()) {
+            tweens.addAll(tweensToAdd)
+            tweensToAdd.clear()
+        }
 
-        tweens.forEach {
-            if (it.active) {
-                it.update(dt)
+        var index = 0
+        while (index < tweens.size) {
+            val tween = tweens[index]
+            if (tween.active) {
+                tween.update(dt)
             }
-            if (it.isEnded && it.expire) {
-                it.remove()
+            if (tween.isEnded && tween.expire) {
+                tween.remove()
             }
+            index++
         }
 
         if (tweensToDelete.isNotEmpty()) {
-            tweensToDelete.forEach {
-                tweens.remove(it)
-            }
-            tweensToDelete.clear()
+            compactDeletedTweens()
         }
+    }
+
+    private fun compactDeletedTweens() {
+        val deletedTweens = HashSet<Tween>(tweensToDelete.size * 2)
+        deletedTweens.addAll(tweensToDelete)
+        var writeIndex = 0
+        var readIndex = 0
+        while (readIndex < tweens.size) {
+            val tween = tweens[readIndex]
+            if (!deletedTweens.contains(tween)) {
+                if (writeIndex != readIndex) {
+                    tweens[writeIndex] = tween
+                }
+                writeIndex++
+            } else if (tween.manager === this) {
+                tween.manager = null
+            }
+            readIndex++
+        }
+        if (writeIndex < tweens.size) {
+            tweens.subList(writeIndex, tweens.size).clear()
+        }
+        tweensToDelete.clear()
     }
 
     /**
@@ -127,12 +177,15 @@ class TweenManager {
      */
     fun getTweensForTarget(target: Any): MutableList<Tween> {
         val tweens = mutableListOf<Tween>()
-        this.tweens.forEach {
-            if (it.target == target) {
-                tweens.add(it)
+        var index = 0
+        while (index < this.tweens.size) {
+            val tween = this.tweens[index]
+            if (tween.target == target) {
+                tweens.add(tween)
             }
+            index++
         }
-        return tweens;
+        return tweens
     }
 
     /**
@@ -144,28 +197,51 @@ class TweenManager {
 
     //把Tween 添加到 任务池里
     fun addTween(tween: Tween) {
-        tween.manager = this
-        tweensToAdd.add(tween)
-//        tweens.add(tween)
+        enqueueOperation {
+            if (tweens.contains(tween) || tweensToAdd.contains(tween)) {
+                tween.manager = this
+                return@enqueueOperation
+            }
+            tweensToDelete.remove(tween)
+            tween.manager = this
+            tweensToAdd.add(tween)
+        }
     }
 
     //把Tween添加到 删除池里，下一帧删除
     fun removeTween(tween: Tween) {
-        tweensToDelete.add(tween)
-        tweensToAdd.remove(tween)
+        enqueueOperation {
+            if (!tweensToDelete.contains(tween)) {
+                tweensToDelete.add(tween)
+            }
+            tweensToAdd.remove(tween)
+        }
     }
 
 
-    fun destroy() {
+    private fun destroyInternal() {
         tweensToAdd.clear()
-        tweens.forEach {
-            it.remove()
+        pendingOperations.clear()
+        var index = 0
+        while (index < tweens.size) {
+            tweens[index].remove()
+            index++
         }
         tweensToDelete.clear()
         tweens.clear()
 //        mAnimationThread = null
         mTweenAnimationHandler?.destroy()
         mTweenAnimationHandler = null
+    }
+
+    fun destroy() {
+        if (isMainThread()) {
+            destroyInternal()
+        } else {
+            mTweenAnimationHandler?.postToMain {
+                destroyInternal()
+            }
+        }
     }
 
 }

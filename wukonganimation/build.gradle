@@ -30,7 +30,7 @@ configure(project.extensions.getByName("android")) {
     }
 }
 
-apply from: 'new-mvn-push.gradle'
+//apply from: 'new-mvn-push.gradle'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

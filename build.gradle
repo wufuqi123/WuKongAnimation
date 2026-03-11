@@ -19,23 +19,23 @@ buildscript {
     }
 }
 
-apply plugin: 'io.github.gradle-nexus.publish-plugin'
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            // 👇 修改为新的 Central Portal 地址
-            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
-
-            username = (findProperty('NEXUS_USERNAME') ?: '') as String
-            password = (findProperty('NEXUS_PASSWORD') ?: '') as String
-            packageGroup = (findProperty('GROUP') ?: '') as String
-        }
-    }
-    connectTimeout.set(Duration.ofMinutes(3))
-    clientTimeout.set(Duration.ofMinutes(3))
-}
+//apply plugin: 'io.github.gradle-nexus.publish-plugin'
+//
+//nexusPublishing {
+//    repositories {
+//        sonatype {
+//            // 👇 修改为新的 Central Portal 地址
+//            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+//            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+//
+//            username = (findProperty('NEXUS_USERNAME') ?: '') as String
+//            password = (findProperty('NEXUS_PASSWORD') ?: '') as String
+//            packageGroup = (findProperty('GROUP') ?: '') as String
+//        }
+//    }
+//    connectTimeout.set(Duration.ofMinutes(3))
+//    clientTimeout.set(Duration.ofMinutes(3))
+//}
 
 allprojects {
     repositories {

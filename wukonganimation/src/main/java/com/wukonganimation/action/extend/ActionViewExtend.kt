@@ -60,3 +60,7 @@ fun View.createSpawnAction() : SpawnActionRunBuild {
 fun View.stopAction() {
     RunAction.stopAction(this)
 }
+
+fun View.stopWukong() {
+    RunAction.stopAction(this)
+}

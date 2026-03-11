@@ -143,19 +143,20 @@ class TweenManager {
     }
 
     private fun compactDeletedTweens() {
-        val deletedTweens = HashSet<Tween>(tweensToDelete.size * 2)
-        deletedTweens.addAll(tweensToDelete)
         var writeIndex = 0
         var readIndex = 0
         while (readIndex < tweens.size) {
             val tween = tweens[readIndex]
-            if (!deletedTweens.contains(tween)) {
+            if (!tween.pendingDeletion) {
                 if (writeIndex != readIndex) {
                     tweens[writeIndex] = tween
                 }
                 writeIndex++
-            } else if (tween.manager === this) {
-                tween.manager = null
+            } else {
+                tween.pendingDeletion = false
+                if (tween.manager === this) {
+                    tween.manager = null
+                }
             }
             readIndex++
         }
@@ -199,9 +200,11 @@ class TweenManager {
     fun addTween(tween: Tween) {
         enqueueOperation {
             if (tweens.contains(tween) || tweensToAdd.contains(tween)) {
+                tween.pendingDeletion = false
                 tween.manager = this
                 return@enqueueOperation
             }
+            tween.pendingDeletion = false
             tweensToDelete.remove(tween)
             tween.manager = this
             tweensToAdd.add(tween)
@@ -211,10 +214,18 @@ class TweenManager {
     //把Tween添加到 删除池里，下一帧删除
     fun removeTween(tween: Tween) {
         enqueueOperation {
-            if (!tweensToDelete.contains(tween)) {
+            val removedFromAdd = tweensToAdd.remove(tween)
+            if (removedFromAdd) {
+                tween.pendingDeletion = false
+                if (tween.manager === this) {
+                    tween.manager = null
+                }
+                return@enqueueOperation
+            }
+            if (!tween.pendingDeletion) {
+                tween.pendingDeletion = true
                 tweensToDelete.add(tween)
             }
-            tweensToAdd.remove(tween)
         }
     }
 

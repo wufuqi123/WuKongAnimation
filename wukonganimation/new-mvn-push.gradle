@@ -1,0 +1,121 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+def isReleaseBuild() {
+    return !(VERSION_NAME as String).contains('SNAPSHOT')
+}
+
+def appendPomMetadata = { pom ->
+    pom.name = POM_NAME
+    pom.description = POM_DESCRIPTION
+    pom.url = POM_URL
+
+    pom.licenses {
+        license {
+            name = POM_LICENCE_NAME
+            url = POM_LICENCE_URL
+            distribution = POM_LICENCE_DIST
+        }
+    }
+
+    pom.developers {
+        developer {
+            id = POM_DEVELOPER_ID
+            name = POM_DEVELOPER_NAME
+        }
+    }
+
+    pom.scm {
+        url = POM_SCM_URL
+        connection = POM_SCM_CONNECTION
+        developerConnection = POM_SCM_DEV_CONNECTION
+    }
+}
+
+def appendDependencies = { xml ->
+    def dependenciesNode = xml.asNode().appendNode('dependencies')
+    def deps = []
+    ['api', 'implementation'].each { configName ->
+        def config = configurations.findByName(configName)
+        if (config != null) {
+            deps.addAll(config.allDependencies)
+        }
+    }
+    deps.findAll { it.group && it.name && it.version && it.name != 'unspecified' }
+            .unique { "${it.group}:${it.name}" }
+            .each { dep ->
+                def dependencyNode = dependenciesNode.appendNode('dependency')
+                dependencyNode.appendNode('groupId', dep.group)
+                dependencyNode.appendNode('artifactId', dep.name)
+                dependencyNode.appendNode('version', dep.version)
+                dependencyNode.appendNode('scope', 'runtime')
+            }
+}
+
+afterEvaluate { project ->
+    task androidSourcesJar(type: Jar) {
+        archiveClassifier.set('sources')
+        from android.sourceSets.main.java.srcDirs
+        def kotlinDir = file('src/main/kotlin')
+        if (kotlinDir.exists()) {
+            from kotlinDir
+        }
+    }
+
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.sourceFiles
+        classpath += files(android.getBootClasspath().join(File.pathSeparator))
+        classpath += files(android.libraryVariants.find { it.name == 'release' }?.javaCompileProvider?.get()?.classpath?.files ?: [])
+        excludes = ['**/*.kt']
+        options.encoding = 'UTF-8'
+        failOnError = false
+    }
+
+    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        archiveClassifier.set('javadoc')
+        from androidJavadocs.destinationDir
+    }
+
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = GROUP
+                artifactId = POM_ARTIFACT_ID
+                version = VERSION_NAME
+
+                def releaseComponent = components.findByName('release')
+                if (releaseComponent != null) {
+                    from releaseComponent
+                } else {
+                    artifact("$buildDir/outputs/aar/${project.name}-release.aar") {
+                        builtBy tasks.findByName('bundleReleaseAar')
+                    }
+                    pom.withXml {
+                        def root = asNode()
+                        if (!root.packaging) {
+                            root.appendNode('packaging', POM_PACKAGING)
+                        }
+                        appendDependencies(delegate)
+                    }
+                }
+
+                artifact androidSourcesJar
+//                artifact androidJavadocsJar
+                pom {
+                    appendPomMetadata(delegate)
+                }
+            }
+        }
+    }
+
+    signing {
+        required {
+            isReleaseBuild() && gradle.taskGraph.allTasks.any { task ->
+                task.name == 'publishToSonatype' ||
+                        task.name == 'closeAndReleaseSonatypeStagingRepository' ||
+                        task.name.startsWith('publishReleasePublicationTo')
+            }
+        }
+        sign publishing.publications.release
+    }
+}

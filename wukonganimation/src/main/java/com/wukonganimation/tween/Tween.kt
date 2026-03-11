@@ -5,6 +5,10 @@ import com.wukonganimation.tween.targetvalue.TargetValueAbstract
 import com.wukonganimation.tween.targetvalue.TargetValueManager
 
 class Tween {
+    companion object {
+        private val DEFAULT_EASING = Easing.linear()
+    }
+
     //要修改的对象
     var target: Any
     var mTargetValueInterface: TargetValueAbstract
@@ -40,9 +44,12 @@ class Tween {
     var active: Boolean = false
 
     //使用的算法
-    private var easingProperty: (t: Double) -> Double = Easing.linear()
-    private var easingDoubleProperty: Easing.DoubleEasing? = Easing.linear() as? Easing.DoubleEasing
-    private var easingFloatProperty: Easing.FloatEasing? = Easing.linear() as? Easing.FloatEasing
+    private var easingProperty: (t: Double) -> Double = DEFAULT_EASING
+    private var easingDoubleProperty: Easing.DoubleEasing? = DEFAULT_EASING as? Easing.DoubleEasing
+    private var easingFloatProperty: Easing.FloatEasing? = DEFAULT_EASING as? Easing.FloatEasing
+    private var useLinearEasingFastPath: Boolean = true
+
+    internal var pendingDeletion: Boolean = false
 
     //执行完一次后  是否从内存内清理出来
     @JvmField
@@ -111,6 +118,8 @@ class Tween {
     private var propertyBeginFloatValues = FloatArray(0)
     private var propertyChangeFloatValues = FloatArray(0)
     private var propertyUseFloatPath = BooleanArray(0)
+    private var propertyFloatStateCount = 0
+    private var propertyDoubleStateCount = 0
 
     private fun ensurePropertyStateCapacity(requiredSize: Int) {
         if (propertyAccessors.size >= requiredSize) {
@@ -135,6 +144,8 @@ class Tween {
             index++
         }
         propertyStateCount = 0
+        propertyFloatStateCount = 0
+        propertyDoubleStateCount = 0
     }
 
     // ...existing code...
@@ -179,6 +190,7 @@ class Tween {
         this.easingProperty = easingProperty
         this.easingDoubleProperty = easingProperty as? Easing.DoubleEasing
         this.easingFloatProperty = easingProperty as? Easing.FloatEasing
+        this.useLinearEasingFastPath = easingProperty === DEFAULT_EASING
         return this
     }
 
@@ -370,7 +382,7 @@ class Tween {
     fun clear(): Tween {
         countTime = 0
         active = false
-        easing(Easing.linear())
+        easing(DEFAULT_EASING)
         expire = false
         countRepeat = 0
         loop = false
@@ -378,6 +390,7 @@ class Tween {
         pingPongProperty = false
         isStarted = false
         isEnded = false
+        pendingDeletion = false
         toData.clear()
         fromData.clear()
         clearPropertyTweenStates()
@@ -418,11 +431,49 @@ class Tween {
 
     //设置参数
     private fun apply(time: Long) {
+        if (propertyStateCount == 0) {
+            return
+        }
         val progress = this.currElapsedTime / time.toDouble()
-        val easedProgress = easingDoubleProperty?.apply(progress) ?: this.easingProperty(progress)
-        val progressFloat = progress.toFloat()
-        val easedProgressFloat = easingFloatProperty?.applyFloat(progressFloat) ?: easedProgress.toFloat()
+        if (propertyDoubleStateCount == 0) {
+            val progressFloat = progress.toFloat()
+            val easedProgressFloat = when {
+                useLinearEasingFastPath -> progressFloat
+                easingFloatProperty != null -> easingFloatProperty!!.applyFloat(progressFloat)
+                easingDoubleProperty != null -> easingDoubleProperty!!.apply(progress).toFloat()
+                else -> this.easingProperty(progress).toFloat()
+            }
+            var index = 0
+            while (index < propertyStateCount) {
+                propertyFloatAccessors[index]!!.setFloat(
+                    propertyBeginFloatValues[index] + propertyChangeFloatValues[index] * easedProgressFloat
+                )
+                index++
+            }
+            return
+        }
 
+        val easedProgress = when {
+            useLinearEasingFastPath -> progress
+            easingDoubleProperty != null -> easingDoubleProperty!!.apply(progress)
+            else -> this.easingProperty(progress)
+        }
+        if (propertyFloatStateCount == 0) {
+            var index = 0
+            while (index < propertyStateCount) {
+                propertyAccessors[index]!!.set(
+                    propertyBeginValues[index] + propertyChangeValues[index] * easedProgress
+                )
+                index++
+            }
+            return
+        }
+
+        val easedProgressFloat = when {
+            useLinearEasingFastPath -> progress.toFloat()
+            easingFloatProperty != null -> easingFloatProperty!!.applyFloat(progress.toFloat())
+            else -> easedProgress.toFloat()
+        }
         var index = 0
         while (index < propertyStateCount) {
             if (propertyUseFloatPath[index]) {
@@ -592,7 +643,13 @@ class Tween {
             propertyAccessors[index] = accessor
             val floatAccessor = accessor as? TargetValueAbstract.FloatBoundPropertyAccessor
             propertyFloatAccessors[index] = floatAccessor
-            propertyUseFloatPath[index] = floatAccessor != null
+            val useFloatPath = floatAccessor != null
+            propertyUseFloatPath[index] = useFloatPath
+            if (useFloatPath) {
+                propertyFloatStateCount++
+            } else {
+                propertyDoubleStateCount++
+            }
 
             val beginDouble = beginNumber.toDouble()
             propertyBeginValues[index] = beginDouble

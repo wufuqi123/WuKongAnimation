@@ -247,6 +247,24 @@ class ExampleUnitTest {
         assertEquals(true, accessors[0] is TargetValueAbstract.BoundPropertyAccessor)
     }
 
+    @Test
+    fun tweenEnablesLinearFastPathForDefaultEasing() {
+        val tween = Tween(Holder()).easing(Easing.linear())
+        val fastPathField = Tween::class.java.getDeclaredField("useLinearEasingFastPath")
+        fastPathField.isAccessible = true
+
+        assertEquals(true, fastPathField.getBoolean(tween))
+    }
+
+    @Test
+    fun tweenDisablesLinearFastPathForCustomLambda() {
+        val tween = Tween(Holder()).easing { t -> t }
+        val fastPathField = Tween::class.java.getDeclaredField("useLinearEasingFastPath")
+        fastPathField.isAccessible = true
+
+        assertEquals(false, fastPathField.getBoolean(tween))
+    }
+
     class Holder {
         @JvmField
         var x: Double = 0.0

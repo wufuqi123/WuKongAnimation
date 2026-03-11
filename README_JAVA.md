@@ -2,6 +2,13 @@
     一个优雅的代码动画库。支持直接函数调用和链式调用。内部封装Tween来作为动画内核。
 ```
 
+#### 文档导航
+
+- [Kotlin 使用文档](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
+- [Java 使用文档（当前页）](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
+- [Tween 使用文档](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md)
+- [Tween 性能对比说明](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md#tween-性能对比说明)
+
 #### 图片和动画看不到
 ##### [码云链接请进入](https://gitee.com/wu_fuqi/WuKongAnimation/blob/master/README_JAVA.md)
 
@@ -10,6 +17,16 @@
 ##### [kotlin使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README.md)
 [java使用方式请进入](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_JAVA.md)
 
+
+#### 性能说明
+
+如果你是看 Demo 里的性能对比页，请先看 [`README_TWEEN.md`](https://github.com/wufuqi123/WuKongAnimation/blob/main/README_TWEEN.md#tween-性能对比说明)。
+
+那里说明了：
+- 参数参考（`scenario`、`duration(ms)`、`iterations`、`view count`）
+- 当前测试环境（Android 16 / 存储 6G / 内存 512MB / CPU cores 14）
+- 对比数据是 **Tween 类直接运行** 口径
+- Java 链式 / Action 封装和 Kotlin 语法糖因为多一层封装，通常达不到同样的数据
 
 #### 动画使用
     接下来介绍 <链式动画> 和 <action动画> 的使用方式。

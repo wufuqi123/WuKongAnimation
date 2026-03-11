@@ -1,6 +1,7 @@
 package com.example.hehe
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hehe.adapter.MainRecyclerAdapter
 import com.example.hehe.ui.*
 import com.example.hehe.uikt.*
+import com.wukonganimation.action.chained.SequenceActionBuild
+import com.wukonganimation.action.chained.SpawnActionBuild
+import com.wukonganimation.action.extend.createAction
+import com.wukonganimation.action.extend.wukong
 
 
 class MainActivity : AppCompatActivity() {
@@ -115,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         rv.layoutManager = linearLayoutManager
+
 
 
     }

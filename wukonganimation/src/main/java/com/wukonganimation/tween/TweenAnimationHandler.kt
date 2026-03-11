@@ -15,6 +15,9 @@ class TweenAnimationHandler(var mTweenManager: TweenManager) {
     @Volatile
     private var isStart = false
 
+    @Volatile
+    private var isStartPosted = false
+
     private val mDestroyMessage = Object()
 
     private val mDestroyWhat = 9999
@@ -31,6 +34,7 @@ class TweenAnimationHandler(var mTweenManager: TweenManager) {
         override fun doFrame(frameTimeNanos: Long) {
             if (isDestroy) {
                 isStart = false
+                isStartPosted = false
                 return
             }
             val dt = if (lastFrameTimeNanos == 0L) 0L else (frameTimeNanos - lastFrameTimeNanos) / 1_000_000L
@@ -38,6 +42,7 @@ class TweenAnimationHandler(var mTweenManager: TweenManager) {
             update(dt)
             if (this@TweenAnimationHandler.mTweenManager.isEmpty() || isDestroy) {
                 isStart = false
+                isStartPosted = false
                 lastFrameTimeNanos = 0L
                 return
             }
@@ -55,8 +60,22 @@ class TweenAnimationHandler(var mTweenManager: TweenManager) {
     }
 
     fun start() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            if (isDestroy || isStart) {
+                return
+            }
+            isStart = true
+            isStartPosted = false
+            lastFrameTimeNanos = 0L
+            Choreographer.getInstance().postFrameCallback(doFrame)
+            return
+        }
+        if (isDestroy || isStart || isStartPosted) {
+            return
+        }
+        isStartPosted = true
         postToMain {
-            //保证在主线程执行
+            isStartPosted = false
             if (isDestroy || isStart) {
                 return@postToMain
             }
@@ -68,6 +87,7 @@ class TweenAnimationHandler(var mTweenManager: TweenManager) {
 
     fun destroy() {
         isStart = false
+        isStartPosted = false
         lastFrameTimeNanos = 0L
         val message = Message()
         message.what = mDestroyWhat

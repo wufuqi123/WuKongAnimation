@@ -1,7 +1,10 @@
+import java.time.Duration
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = "1.5.10"
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
     }
@@ -9,10 +12,29 @@ buildscript {
         classpath "com.android.tools.build:gradle:4.2.2"
 //        classpath "com.gradle:gradle-enterprise-gradle-plugin:3.4.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+//        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
+        classpath "io.github.gradle-nexus:publish-plugin:2.0.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+}
+
+apply plugin: 'io.github.gradle-nexus.publish-plugin'
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            // 👇 修改为新的 Central Portal 地址
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+
+            username = (findProperty('NEXUS_USERNAME') ?: '') as String
+            password = (findProperty('NEXUS_PASSWORD') ?: '') as String
+            packageGroup = (findProperty('GROUP') ?: '') as String
+        }
+    }
+    connectTimeout.set(Duration.ofMinutes(3))
+    clientTimeout.set(Duration.ofMinutes(3))
 }
 
 allprojects {
